@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transfreq.TopoObj_mod.TopoObj &mdash; transfreq 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> transfreq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.TopoObj_mod</span></code>.TopoObj</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">transfreq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.TopoObj_mod</span></code>.TopoObj</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/generated/transfreq.TopoObj_mod.TopoObj.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="transfreq-topoobj-mod-topoobj">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.TopoObj_mod</span></code>.TopoObj<a class="headerlink" href="#transfreq-topoobj-mod-topoobj" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="transfreq.TopoObj_mod.TopoObj">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">transfreq.TopoObj_mod.</span></span><span class="sig-name descname"><span class="pre">TopoObj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xyz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cartesian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'degree'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_mark_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_mark_symbol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'disc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_txt_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">under</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">over</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transfreq.TopoObj_mod.TopoObj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a topoplot object.</p>
+<dl class="simple">
+<dt>name<span class="classifier">string</span></dt><dd><p>The name of the connectivity object.</p>
+</dd>
+<dt>data<span class="classifier">array_like</span></dt><dd><p>Array of data of shape (n_channels)</p>
+</dd>
+<dt>xyz<span class="classifier">array_like | None</span></dt><dd><p>Array of source’s coordinates.</p>
+</dd>
+<dt>channels<span class="classifier">list | None</span></dt><dd><p>List of channel names.</p>
+</dd>
+<dt>system<span class="classifier">{‘cartesian’, ‘spherical’}</span></dt><dd><p>Coordinate system.</p>
+</dd>
+<dt>levels<span class="classifier">array_like/int | None</span></dt><dd><p>The levels at which the isocurve is constructed.</p>
+</dd>
+<dt>level_colors<span class="classifier">string/array_like | ‘white’</span></dt><dd><p>The color to use when drawing the line. If a list is given, it
+must be of shape (Nlev), if an array is given, it must be of
+shape (Nlev, …). and provide one color per level
+(rgba, colorname). By default, all levels are whites.</p>
+</dd>
+<dt>unit<span class="classifier">{‘degree’, ‘rad’}</span></dt><dd><p>If system is ‘spherical’, specify if angles are in degrees or radians.</p>
+</dd>
+<dt>line_color<span class="classifier">array_like/string | ‘black’</span></dt><dd><p>Color of lines for the head, nose and eras.</p>
+</dd>
+<dt>line_width<span class="classifier">float | 4.</span></dt><dd><p>Line width for the head, nose and eras.</p>
+</dd>
+<dt>chan_size<span class="classifier">float | 12.</span></dt><dd><p>Size of channel names text.</p>
+</dd>
+<dt>chan_mark_color<span class="classifier">array_like/string | ‘white’</span></dt><dd><p>Color of channel markers.</p>
+</dd>
+<dt>chan_mark_symbol<span class="classifier">string | ‘disc’</span></dt><dd><p>Symbol to use for markers. Use disc, arrow, ring, clobber, square,
+diamond, vbar, hbar, cross, tailed_arrow, x, triangle_up,
+triangle_down, and star.</p>
+</dd>
+<dt>chan_txt_color<span class="classifier">array_like/string | ‘black’</span></dt><dd><p>Color of channel names.</p>
+</dd>
+<dt>cmap<span class="classifier">string | None</span></dt><dd><p>Matplotlib colormap (like ‘viridis’, ‘inferno’…).</p>
+</dd>
+<dt>clim<span class="classifier">tuple/list | None</span></dt><dd><p>Colorbar limit. Every values under / over clim will
+clip.</p>
+</dd>
+<dt>vmin<span class="classifier">float | None</span></dt><dd><p>Every values under vmin will have the color defined
+using the under parameter.</p>
+</dd>
+<dt>vmax<span class="classifier">float | None</span></dt><dd><p>Every values over vmin will have the color defined
+using the over parameter.</p>
+</dd>
+<dt>under<span class="classifier">tuple/string | None</span></dt><dd><p>Matplotlib color under vmin.</p>
+</dd>
+<dt>over<span class="classifier">tuple/string | None</span></dt><dd><p>Matplotlib color over vmax.</p>
+</dd>
+<dt>transform<span class="classifier">VisPy.visuals.transforms | None</span></dt><dd><p>VisPy transformation to set to the parent node.</p>
+</dd>
+<dt>parent<span class="classifier">VisPy.parent | None</span></dt><dd><p>Line object parent.</p>
+</dd>
+<dt>verbose<span class="classifier">string</span></dt><dd><p>Verbosity level.</p>
+</dd>
+<dt>kw<span class="classifier">dict | {}</span></dt><dd><p>Optional arguments are used to control the colorbar
+(See <code class="xref py py-class docutils literal notranslate"><span class="pre">ColorbarObj</span></code>).</p>
+</dd>
+</dl>
+<p>List of supported shortcuts :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>s</strong> : save the figure</p></li>
+<li><p><strong>&lt;delete&gt;</strong> : reset camera</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="transfreq.TopoObj_mod.TopoObj.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">connect</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transfreq.TopoObj_mod.TopoObj.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw connectivity lines between channels.</p>
+<dl class="simple">
+<dt>connect<span class="classifier">array_like</span></dt><dd><p>A 2D array of connectivity links of shape (n_channels, n_channels).</p>
+</dd>
+<dt>kwargs<span class="classifier">dict | {}</span></dt><dd><p>Optional arguments are passed to the <cite>visbrain.objects.ConnectObj</cite>
+object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="transfreq.TopoObj_mod.TopoObj.set_data">
+<span class="sig-name descname"><span class="pre">set_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'white'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'viridis'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">under</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gray'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">over</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'red'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transfreq.TopoObj_mod.TopoObj.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set data to the topoplot.</p>
+<dl class="simple">
+<dt>data<span class="classifier">array_like</span></dt><dd><p>Array of data of shape (n_channels)</p>
+</dd>
+<dt>levels<span class="classifier">array_like/int | None</span></dt><dd><p>The levels at which the isocurve is constructed.</p>
+</dd>
+<dt>level_colors<span class="classifier">string/array_like | ‘white’</span></dt><dd><p>The color to use when drawing the line. If a list is given, it
+must be of shape (Nlev), if an array is given, it must be of
+shape (Nlev, …). and provide one color per level
+(rgba, colorname). By default, all levels are whites.</p>
+</dd>
+<dt>cmap<span class="classifier">string | None</span></dt><dd><p>Matplotlib colormap (like ‘viridis’, ‘inferno’…).</p>
+</dd>
+<dt>clim<span class="classifier">tuple/list | None</span></dt><dd><p>Colorbar limit. Every values under / over clim will
+clip.</p>
+</dd>
+<dt>vmin<span class="classifier">float | None</span></dt><dd><p>Every values under vmin will have the color defined
+using the under parameter.</p>
+</dd>
+<dt>vmax<span class="classifier">float | None</span></dt><dd><p>Every values over vmin will have the color defined
+using the over parameter.</p>
+</dd>
+<dt>under<span class="classifier">tuple/string | None</span></dt><dd><p>Matplotlib color under vmin.</p>
+</dd>
+<dt>over<span class="classifier">tuple/string | None</span></dt><dd><p>Matplotlib color over vmax.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div style='clear:both'></div></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

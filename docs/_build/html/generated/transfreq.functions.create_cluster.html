@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>transfreq.functions.create_cluster &mdash; transfreq 1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> transfreq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.functions</span></code>.create_cluster</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">transfreq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.functions</span></code>.create_cluster</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/generated/transfreq.functions.create_cluster.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="transfreq-functions-create-cluster">
+<h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">transfreq.functions</span></code>.create_cluster<a class="headerlink" href="#transfreq-functions-create-cluster" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="transfreq.functions.create_cluster">
+<span class="sig-prename descclassname"><span class="pre">transfreq.functions.</span></span><span class="sig-name descname"><span class="pre">create_cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freqs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#transfreq.functions.create_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually creates a TFbox</p>
+<dl>
+<dt>Parameters:</dt><dd><dl class="simple">
+<dt>psds: array</dt><dd><p>cross power spectral matrix (N_sources x N_freqs)</p>
+</dd>
+<dt>freqs: array</dt><dd><p>frequncies at which the psds is computed</p>
+</dd>
+<dt>ch_names: list of strings</dt><dd><p>name of the channels</p>
+</dd>
+<dt>theta_range: tuple | list | array</dt><dd><p>theta range to compute alpha coefficients (eg: [5,7])</p>
+</dd>
+<dt>alpha_range: tuple | list | array</dt><dd><p>alpha range to compute theta coefficients (eg: [9,11])</p>
+</dd>
+<dt>theta_idx: tuple | list | array</dt><dd><p>indices of the theta channels in the cluster</p>
+</dd>
+<dt>alpha_idx: tuple | list | array</dt><dd><p>indices of the theta channels in the cluster</p>
+</dd>
+<dt>method: str</dt><dd><p>the name the user wants to assign to the customized cluster</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl>
+<dt>TFbox: dictionary</dt><dd><dl>
+<dt>Dictionary containing:</dt><dd><p>-) the method used to compute the cluster
+-) the cluster: pandas dataframe (rows: alpha</p>
+<blockquote>
+<div><p>coefficients, theta coefficients, clustering labels; olumns: 
+channel names)</p>
+</div></blockquote>
+<p>-) the transition freqency (TF) (set to None if not computed yet)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<div style='clear:both'></div></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
