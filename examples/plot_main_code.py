@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jul 23 14:22:03 2021
+Title of the example
+===========================
 
-@author: elisabetta
+Short description
 """
+
 
 import mne
 from transfreq import functions
