@@ -9,7 +9,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans, MeanShift
 from visbrain.objects import ColorbarObj, SceneObj
-import TopoObj_mod
+from .TopoObj_mod import TopoObj
 import warnings
 
 def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = None, method = '2bis'):
@@ -613,7 +613,7 @@ def plot_chs(TFbox, ch_locs, method = None):
         # Theta coefficient
     
         # Create the topoplot and the object :
-        t_obj_1 = TopoObj_mod.TopoObj('topo', alpha_coef/theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
+        t_obj_1 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
                           clim=(min(alpha_coef/theta_coef), max(alpha_coef/theta_coef)), chan_mark_color='red' , **kw_top)
         cb_obj_1 = ColorbarObj(t_obj_1, cblabel=r'alpha/theta coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
@@ -624,7 +624,7 @@ def plot_chs(TFbox, ch_locs, method = None):
      
         # Alpha coefficient
         
-        t_obj_2 = TopoObj_mod.TopoObj('topo', alpha_coef/theta_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
+        t_obj_2 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
                           clim=(min(alpha_coef/theta_coef), max(alpha_coef/theta_coef)), chan_mark_color='red' ,**kw_top)
         cb_obj_2 = ColorbarObj(t_obj_2, cblabel=r'alpha/theta coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
@@ -638,7 +638,7 @@ def plot_chs(TFbox, ch_locs, method = None):
         # Theta coefficient
     
         # Create the topoplot and the object :
-        t_obj_1 = TopoObj_mod.TopoObj('topo', theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
+        t_obj_1 = TopoObj('topo', theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
                           clim=(min(theta_coef), max(theta_coef)), chan_mark_color='red' , **kw_top)
         cb_obj_1 = ColorbarObj(t_obj_1, cblabel='Theta coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
@@ -649,7 +649,7 @@ def plot_chs(TFbox, ch_locs, method = None):
      
         # Alpha coefficient
         
-        t_obj_2 = TopoObj_mod.TopoObj('topo', alpha_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
+        t_obj_2 = TopoObj('topo', alpha_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
                           clim=(min(alpha_coef), max(alpha_coef)), chan_mark_color='red' ,**kw_top)
         cb_obj_2 = ColorbarObj(t_obj_2, cblabel='Alpha coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
