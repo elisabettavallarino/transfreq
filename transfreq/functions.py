@@ -632,7 +632,7 @@ def plot_chs(TFbox, ch_locs, method = None):
                           title='Group 2')
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100,height_max=800)
             
-        sc.preview()  
+        sc.preview()
     
     elif method in ['2','2bis']:
         # Theta coefficient
@@ -657,7 +657,7 @@ def plot_chs(TFbox, ch_locs, method = None):
                           title='Group 2')
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100,height_max=800)
             
-        sc.preview()  
+        sc.preview()
         
     
         

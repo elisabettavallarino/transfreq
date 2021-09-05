@@ -57,11 +57,14 @@ for ii in range(len(ch_names)):
 # compute TFbox automatically
 TFbox = functions.computeTF_auto(psds, freqs, ch_names, alpha_range = None, theta_range = None, method = '2bis', iterative=True)
 
+###########################################################################
 # plot clustering
 functions.plot_clustering(TFbox, method = None)   
 
+###########################################################################
 # plot channels on head surface
 functions.plot_chs(TFbox, ch_locs, method = None)
 
+###########################################################################
 # plot transition frequency
 functions.plot_TF(psds, freqs, TFbox)

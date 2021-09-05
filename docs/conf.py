@@ -13,7 +13,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+from visbrain.config import CONFIG
 
 # -- Project information -----------------------------------------------------
 
@@ -58,4 +58,7 @@ html_static_path = ['_static']
 sphinx_gallery_conf = {
      'examples_dirs': '../examples',   # path to your example scripts
      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+     'image_scrapers': ('matplotlib'), # figures extension to be embedded
 }
+
+CONFIG['MPL_RENDER'] = True # Embed visbrain figures in the documentation
