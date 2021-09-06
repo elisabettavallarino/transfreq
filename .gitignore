@@ -1,0 +1,8 @@
+# Sphinx documentation
+docs/_build
+docs/auto_examples/
+docs/modules/generated/
+docs/datasets/generated/
+
+# Distribution / packaging
+*.egg-info/

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jul 23 14:22:03 2021
+Title of the example
+===========================
 
-@author: elisabetta
+Short description
 """
 
+
 import mne
-import functions
+from transfreq import functions
 import os.path as op
 import numpy as np
 
@@ -16,7 +18,7 @@ subj = '001'
 ses = '01'
 
 # define file paths
-f_name = op.join('sub-'+subj,'ses-'+ses,'eeg','sub-'+subj+'_ses-'+ses+'_task-eyeclose_raw.fif')
+f_name = op.join('..', 'sub-'+subj,'ses-'+ses,'eeg','sub-'+subj+'_ses-'+ses+'_task-eyeclose_raw.fif')
 
 # load data
 raw = mne.io.read_raw_fif(f_name)
@@ -55,11 +57,14 @@ for ii in range(len(ch_names)):
 # compute TFbox automatically
 TFbox = functions.computeTF_auto(psds, freqs, ch_names, alpha_range = None, theta_range = None, method = '2bis', iterative=True)
 
+###########################################################################
 # plot clustering
 functions.plot_clustering(TFbox, method = None)   
 
+###########################################################################
 # plot channels on head surface
 functions.plot_chs(TFbox, ch_locs, method = None)
 
+###########################################################################
 # plot transition frequency
 functions.plot_TF(psds, freqs, TFbox)
