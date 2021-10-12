@@ -11,8 +11,17 @@ from sklearn.cluster import KMeans, MeanShift
 from visbrain.objects import ColorbarObj, SceneObj
 from .TopoObj_mod import TopoObj
 import warnings
+from mpl_render import RenderingImShow
+import cv2
 
-def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = None, method = '2bis'):
+    
+
+
+#colors_orig = ['C3','C9','C2','C1','C4','C5']
+colors_orig = ['C0','C1','#aef956','C3','C4','C5']
+meth_names = ['1D thresholding', '1D Mean-Shift', '2D k-means', '2D adjusted k-means']
+
+def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = None, method = 4):
     """
     Creates a cluster databese
     
@@ -27,7 +36,7 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
             theta range to compute alpha coefficients (eg: [5,7])
         alpha_range: tuple | list | array
             alpha range to compute theta coefficients (eg: [9,11])
-        method: '1', '1bis', '2', '2bis'
+        method: 1, 2, 3, 4
         iterative: bool (default True)
             Whether to use the iterative method (default) or not 
             
@@ -36,7 +45,7 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
             Dictionary containing:
                 -) the method used to compute the cluster
                 -) the cluster: pandas dataframe (rows: alpha 
-                   coefficients, theta coefficients, clustering labels; olumns: 
+                   coefficients, theta coefficients, clustering labels; columns: 
                    channel names)
                 -) the transition freqency (TF) (set to None if not computed yet)
     """
@@ -78,7 +87,7 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
     labels = np.ones(len(ch_names), dtype=int)*2
     
     
-    if method == '1':
+    if method == 1:
         n_ch = 4
         ratio_coef = alpha_coef/theta_coef
         theta_idx = np.where(ratio_coef<=np.sort(ratio_coef)[n_ch-1])[0]
@@ -86,16 +95,29 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
         labels[theta_idx] = 0
         labels[alpha_idx] = 1
         
-    elif method == '1bis':
+    elif method == 2:
         ratio_coef = alpha_coef/theta_coef
         
         kmeans1d =  MeanShift(bandwidth=None).fit(ratio_coef.reshape((-1,1)))
-        alpha_idx = np.where(kmeans1d.labels_==kmeans1d.labels_[np.argsort(ratio_coef)[-1]])[0]
-        theta_idx = np.where(kmeans1d.labels_==kmeans1d.labels_[np.argsort(ratio_coef)[0]])[0]
-        labels[theta_idx] = 0
-        labels[alpha_idx] = 1
         
-    elif method =='2':
+        lab_count = 2
+        for label in range(max(kmeans1d.labels_)+1):
+            if kmeans1d.labels_[np.argsort(ratio_coef)[0]]==label:
+                theta_idx = np.where(kmeans1d.labels_==label)[0]
+                labels[theta_idx] = 0
+            elif kmeans1d.labels_[np.argsort(ratio_coef)[-1]]==label:
+                alpha_idx = np.where(kmeans1d.labels_==label)[0]
+                labels[alpha_idx] = 1
+            else:
+                tmp_idx = np.where(kmeans1d.labels_==label)[0]
+                labels[tmp_idx] = lab_count
+                lab_count += 1
+            
+        
+        
+        
+        
+    elif method ==3:
         coef2d = np.zeros((len(alpha_coef),2))
         coef2d[:,0] = alpha_coef
         coef2d[:,1] = theta_coef
@@ -104,11 +126,11 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
         kmeans2d = KMeans(n_clusters=2, random_state=0).fit(coef2d)
 
         if kmeans2d.cluster_centers_[0,0]> kmeans2d.cluster_centers_[1,0]:
-            alpha_label = 1 
-            theta_label = 0 
-        else:
             alpha_label = 0 
-            theta_label = 1
+            theta_label = 1 
+        else:
+            alpha_label = 1 
+            theta_label = 0
             
         alpha_idx = np.where(kmeans2d.predict(coef2d)==alpha_label)[0]
         theta_idx = np.where(kmeans2d.predict(coef2d)==theta_label)[0]
@@ -116,7 +138,7 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
         labels[alpha_idx] = 1
         
     
-    elif method == '2bis':
+    elif method == 4:
         coef2d = np.zeros((len(alpha_coef),2))
         coef2d[:,0] = alpha_coef
         coef2d[:,1] = theta_coef
@@ -145,7 +167,7 @@ def _compute_cluster(psds, freqs, ch_names, alpha_range = None, theta_range = No
         
         
     else:
-        raise ValueError("Non valid method input. Supported values are '1', '1bis', '2', '2bis' ")
+        raise ValueError("Non valid method input. Supported values are 1, 2, 3, 4 ")
     
         
     cluster = pd.DataFrame(index=['alpha_coef','theta_coef','labels'], columns=ch_names)
@@ -293,7 +315,7 @@ def computeTF_manual(psds, freqs, TFbox):
     return TFbox
 
    
-def computeTF_auto(psds, freqs, ch_names, theta_range = None, alpha_range = None, method = '2bis', iterative=True):
+def computeTF_auto(psds, freqs, ch_names, theta_range = None, alpha_range = None, method = 4, iterative=True):
     
     """
     Automatically compute transition frequency
@@ -309,7 +331,7 @@ def computeTF_auto(psds, freqs, ch_names, theta_range = None, alpha_range = None
             theta range to compute theta coefficients
         alpha_range: tuple | list | array
             alpha range to compute alpha coefficients
-        method: '1', '1bis', '2', '2bis'
+        method: 1, 2, 3, 4
         iterative: bool (default True)
             Whether to use the iterative method (default) or not 
             
@@ -382,13 +404,34 @@ def computeTF_auto(psds, freqs, ch_names, theta_range = None, alpha_range = None
             alpha_range = [AP-1,AP+1]
         else:
             alpha_range = [TF_new,AP+1]
-        theta_range = [TF_new-3,TF_new-1]
+        theta_range = [max(TF_new-3,freqs[0]),TF_new-1]
         
         
     return TFbox
         
+
+
+def compute_TF_klimesch(psds_rest, psds_task, freqs):
+    psds_rest = psds_rest/psds_rest.sum(axis=1).reshape((psds_rest.shape[0],1))
+    psds_task = psds_task/psds_task.sum(axis=1).reshape((psds_task.shape[0],1))
+       
+    f_in_idx = np.where((freqs>=7)&(freqs<=13))[0]
+    AP_idx = f_in_idx[0] + np.argmax(psds_rest.mean(axis=0)[f_in_idx])
+    AP_f = freqs[AP_idx]
+
+    # find transition frequency with Klimesch
+    TF = 5
+    f_in_idx = np.where((freqs>=5)&(freqs<=AP_f-0.5))[0]
+    psds_diff = psds_rest.mean(axis=0)-psds_task.mean(axis=0)
+    for f in np.flip(f_in_idx)[:-1]:
+        if psds_diff[f]*psds_diff[f-1]<0:
+            if (abs(psds_diff[f])<abs(psds_diff[f-1])) & (freqs[f]>=5): TF = freqs[f]; 
+            else: TF = freqs[f-1];
+            break
+    return TF
+
               
-def plot_clustering(TFbox, method = None):
+def plot_clustering(TFbox, method = None, showfig = True, ax = None):
     
     """
     Plot clustering 
@@ -396,60 +439,75 @@ def plot_clustering(TFbox, method = None):
     Parameters:
         cluster: dictionary
             
-        method: None, '1', '1bis', '2', '2bis'
+        method: None, 1, 2, 3, 4
             method to be used for plotting. if None (default) the method contained in TFbox is taken
         
     """
     cluster = TFbox['cluster']
-    if (method is None  and TFbox['method'] in ['1', '1bis', '2', '2bis']):
+    if (method is None  and TFbox['method'] in [1, 2, 3, 4]):
         method = TFbox['method']
-    elif (method is None  and TFbox['method'] not in ['1', '1bis', '2', '2bis']):
-        raise ValueError(" method in cluster not in ['1', '1bis', '2', '2bis'], proviade a method as input")
-    elif (method is not None and method not in ['1', '1bis', '2', '2bis']):
-        raise ValueError(" Non valid input method. Valid valuer are: None, '1', '1bis', '2', '2bis'")
+    elif (method is None  and TFbox['method'] not in [1, 2, 3, 4]):
+        raise ValueError(" method in cluster not in [1, 2, 3, 4], proviade a method as input")
+    elif (method is not None and method not in [1, 2, 3, 4]):
+        raise ValueError(" Non valid input method. Valid valuer are: None, 1, 2, 3, 4")
     
     theta_coef = cluster.loc['theta_coef'].values
     alpha_coef = cluster.loc['alpha_coef'].values
     labels = cluster.loc['labels'].values
-    colors = ['C'+str(label) for label in labels]
+    
     ch_names = cluster.columns.tolist()
-    
-    if method in ['1', '1bis']:
-        fig = plt.figure(figsize=(8,4))
-        plt.scatter(np.arange(len(labels)), alpha_coef/theta_coef, c=colors)
-        plt.grid()
-        plt.xticks(np.arange(len(labels)), labels = ch_names, rotation = 'vertical')
-        plt.xlabel(r'$\alpha/\theta$ coefficients')
-        plt.ylabel(r'$\theta$ coefficients')
-        plt.xlim(-1, len(labels))
-        plt.ylim(0,max(alpha_coef/theta_coef)+(max(alpha_coef/theta_coef)-min(alpha_coef/theta_coef))/10)
-        plt.scatter(-1,-1,color='C0', label='Group 1')
-        plt.scatter(-1,-1,color='C1', label='Group 2')
-        plt.title('Method '+ method)
-        plt.legend()
-        fig.tight_layout()
+    colors = [colors_orig[label] for label in labels]
+    if method in [1, 2]:
+        if ax is None:
+            fig, ax = plt.subplots(1,1,figsize=(8,4))
+        else: 
+            fig = ax.get_figure()
+        ax.scatter(np.arange(len(labels)), alpha_coef/theta_coef, c=colors)
+        ax.grid()
+        ax.set_xticks(np.arange(len(labels)))
+        ax.set_xticklabels(ch_names, rotation = 'vertical')
+        ax.set_xlabel(r'$\alpha/\theta$ coefficients')
+        ax.set_ylabel(r'$\theta$ coefficients')
+        ax.set_xlim(-1, len(labels))
+        ax.set_ylim(0,max(alpha_coef/theta_coef)+(max(alpha_coef/theta_coef)-min(alpha_coef/theta_coef))/10)
+        ax.scatter(-1,-1,color=colors_orig[0], label=r'$G_{\theta}$')
+        ax.scatter(-1,-1,color=colors_orig[1], label=r'$G_{\alpha}$')
+        ax.set_title('Method '+ str(method)+': '+meth_names[method])
+        ax.legend()
+        
         
     
-    elif method in ['2', '2bis']:
+    elif method in [3, 4]:
         
-        fig = plt.figure()
-        plt.scatter(alpha_coef, theta_coef, c=colors)
+        if ax is None:
+            fig, ax = plt.subplots(1,1)
+        else: 
+            fig = ax.get_figure()
+        
+        ax.scatter(alpha_coef, theta_coef, c=colors)
         for i, txt in enumerate(ch_names):
-            plt.annotate(txt, (alpha_coef[i], theta_coef[i]))
-        plt.grid()
-        plt.xlabel(r'$\alpha$ coefficients')
-        plt.ylabel(r'$\theta$ coefficients')
-        plt.xlim(min(alpha_coef)-(max(alpha_coef)-min(alpha_coef))/10,max(alpha_coef)+(max(alpha_coef)-min(alpha_coef))/10)
-        plt.ylim(min(theta_coef)-(max(theta_coef)-min(theta_coef))/10,max(theta_coef)+(max(theta_coef)-min(theta_coef))/10)
+            ax.annotate(txt, (alpha_coef[i], theta_coef[i]))
+        ax.grid()
+        ax.set_xlabel(r'$\alpha$ coefficients')
+        ax.set_ylabel(r'$\theta$ coefficients')
+        ax.set_xlim(min(alpha_coef)-(max(alpha_coef)-min(alpha_coef))/10,max(alpha_coef)+(max(alpha_coef)-min(alpha_coef))/10)
+        ax.set_ylim(min(theta_coef)-(max(theta_coef)-min(theta_coef))/10,max(theta_coef)+(max(theta_coef)-min(theta_coef))/10)
         
-        plt.scatter(-1,-1,color='C0', label='Group 1')
-        plt.scatter(-1,-1,color='C1', label='Group 2')
-        plt.title('Method '+ method)
-        plt.legend()
-        fig.tight_layout()
+        ax.scatter(-1,-1,color=colors_orig[0], label=r'$G_{\theta}$')
+        ax.scatter(-1,-1,color=colors_orig[1], label=r'$G_{\alpha}$')
+        ax.set_title('Method '+ str(method)+': '+meth_names[method])
+        ax.legend()
+        
+        
+    if ax is None: fig.tight_layout()
+    
+    if showfig == False:
+        plt.close(fig)
+    
+    return fig
           
 
-def plot_coefficients(psds, freqs, ch_names, theta_range = None, alpha_range = None):
+def plot_coefficients(psds, freqs, ch_names, theta_range = None, alpha_range = None, showfig=True):
     
     
     """
@@ -528,10 +586,14 @@ def plot_coefficients(psds, freqs, ch_names, theta_range = None, alpha_range = N
     ax.set_ylim(min(theta_coef)-(max(theta_coef)-min(theta_coef))/10,max(theta_coef)+(max(theta_coef)-min(theta_coef))/10)
         
     fig.tight_layout()
+    
+    if showfig == False:
+        plt.close(fig)
+        
+    return fig
         
         
-        
-def plot_TF(psds, freqs, TFbox):
+def plot_TF(psds, freqs, TFbox, showfig = True, ax = None):
     """
     Plot transition frequency
     
@@ -543,6 +605,9 @@ def plot_TF(psds, freqs, TFbox):
         TFbox
     
     """
+    
+    
+        
     if TFbox['TF'] is None:
        raise ValueError("Cannot plot TF because its value is None. Please compute TF before using this function") 
     
@@ -558,21 +623,31 @@ def plot_TF(psds, freqs, TFbox):
     
     theta_psds = (psds[theta_idx,:]*(theta_coef[theta_idx]/theta_coef[theta_idx].sum()).reshape(-1,1)).sum(axis=0)
     alpha_psds = (psds[alpha_idx,:]*(alpha_coef[alpha_idx]/alpha_coef[alpha_idx].sum()).reshape(-1,1)).sum(axis=0)
+    
+    if ax is None:
+        fig, ax = plt.subplots(1,1)
+    else: 
+        fig = ax.get_figure()
         
-    fig = plt.figure()
-    plt.plot(freqs, theta_psds, c='C0', label = 'Group 1')
-    plt.plot(freqs, alpha_psds, c='C1', label = 'Group 2')
-    plt.axvline(TFbox['TF'], c='r', label = 'TF = '+str(TFbox['TF'])[:5])
-    plt.grid()
-    plt.title('Method: '+method)
-    plt.legend()
-    plt.xlim(min(freqs),20)
-    fig.tight_layout()
+    ax.plot(freqs, theta_psds, c=colors_orig[0], label = r'$G_{\theta}$')
+    ax.plot(freqs, alpha_psds, c=colors_orig[1], label = r'$G_{\alpha}$')
+    ax.axvline(TFbox['TF'], c='k', label = 'TF = '+str(np.round(TFbox['TF'],decimals=2))+' Hz')
+    ax.grid()
+    ax.set_title('Method '+ str(method)+': '+meth_names[method])
+    ax.legend()
+    ax.set_xlim(min(freqs),20)
+    ax.set_xlabel('frequency [Hz]')
+    if ax is None: fig.tight_layout()
+    
+    if showfig == False:
+        plt.close(fig)
+    
+    return fig
+        
+        
     
         
-        
-def plot_chs(TFbox, ch_locs, method = None):
-    
+def plot_chs(TFbox, ch_locs, method = None, showfig = True, ax = None):
     
     """
     Plot clustered channels oh head surface
@@ -581,17 +656,17 @@ def plot_chs(TFbox, ch_locs, method = None):
         TFbox: 
         ch_locs: array
             channels locations (unit of measure: mm), shape: number of channels x 3
-        method: None, '1', '1bis', '2', '2bis'
+        method: None, 1, 2, 3, 4
     
     """
     
     
-    if (method is None  and TFbox['method'] in ['1', '1bis', '2', '2bis']):
+    if (method is None  and TFbox['method'] in [1, 2, 3, 4]):
         method = TFbox['method']
-    elif (method is None  and TFbox['method'] not in ['1', '1bis', '2', '2bis']):
-        raise ValueError(" method in cluster not in ['1', '1bis', '2', '2bis'], proviade a method as input")
-    elif (method is not None and method not in ['1', '1bis', '2', '2bis']):
-        raise ValueError(" Non valid input method. Valid valuer are: None, '1', '1bis', '2', '2bis'")
+    elif (method is None  and TFbox['method'] not in [1, 2, 3, 4]):
+        raise ValueError(" method in cluster not in [1, 2, 3, 4], proviade a method as input")
+    elif (method is not None and method not in [1, 2, 3, 4]):
+        raise ValueError(" Non valid input method. Valid valuer are: None, 1, 2, 3, 4")
     
     
     theta_coef = TFbox['cluster'].loc['theta_coef'].values
@@ -602,71 +677,147 @@ def plot_chs(TFbox, ch_locs, method = None):
     alpha_idx = np.where(labels == 1)[0]
     
     kw_top = dict(margin=0.2, chan_offset=(0., 0.1, 0.), chan_size=12, line_color='black', line_width = 5)
-    kw_cbar = dict(cbtxtsz=8, txtsz=10., width=.3, txtcolor='black', cbtxtsh=1.8,
+    kw_cbar = dict(cbtxtsz=16, txtsz=14., width=.3, txtcolor='black', cbtxtsh=1.8,
                    rect=(0., -2., 1., 4.), border=True)
         
     
     
-    sc = SceneObj(bgcolor='white', size=(1600, 1000))
+    sc = SceneObj(bgcolor='white', size=(1600, 1000),verbose=False)
     
-    if method in ['1','1bis']:
+    if method in [1,2]:
         # Theta coefficient
-    
+        
+        radius_1 = theta_coef[theta_idx]
         # Create the topoplot and the object :
-        t_obj_1 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
+        t_obj_1 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,radius = radius_1,
                           clim=(min(alpha_coef/theta_coef), max(alpha_coef/theta_coef)), chan_mark_color='red' , **kw_top)
         cb_obj_1 = ColorbarObj(t_obj_1, cblabel=r'alpha/theta coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_1, row=0, col=0, title_color='black', width_max=600,height_max=800,
-                          title='Group 1')
+                          title='Method '+ str(method)+': '+meth_names[method-1]+'\n \n                            G theta',
+                          title_size=24.0)
         sc.add_to_subplot(cb_obj_1, row=0, col=1, width_max=100,height_max=800)
         
      
         # Alpha coefficient
-        
-        t_obj_2 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
+        radius_2 = alpha_coef[alpha_idx]
+        t_obj_2 = TopoObj('topo', alpha_coef/theta_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx, radius = radius_2,
                           clim=(min(alpha_coef/theta_coef), max(alpha_coef/theta_coef)), chan_mark_color='red' ,**kw_top)
         cb_obj_2 = ColorbarObj(t_obj_2, cblabel=r'alpha/theta coefficients', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_2, row=0, col=2, title_color='black', width_max=600,height_max=800,
-                          title='Group 2')
+                          title='\n \n                            G alpha',
+                          title_size=24.0)
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100,height_max=800)
-            
-        sc.preview()
+         
+       
     
-    elif method in ['2','2bis']:
+    elif method in [3,4]:
         # Theta coefficient
     
         # Create the topoplot and the object :
         t_obj_1 = TopoObj('topo', theta_coef, channels=ch_names,  xyz=ch_locs*1000, ch_idx = theta_idx,
                           clim=(min(theta_coef), max(theta_coef)), chan_mark_color='red' , **kw_top)
+    
         cb_obj_1 = ColorbarObj(t_obj_1, cblabel='Theta coefficients', **kw_cbar)
+       
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_1, row=0, col=0, title_color='black', width_max=600,height_max=800,
-                          title='Group 1')
+                          title='Method '+ str(method)+': '+meth_names[method-1]+'\n \n                            G theta',
+                          title_size=24.0)
+       
         sc.add_to_subplot(cb_obj_1, row=0, col=1, width_max=100,height_max=800)
         
-     
         # Alpha coefficient
         
         t_obj_2 = TopoObj('topo', alpha_coef, channels=ch_names, xyz=ch_locs*1000,ch_idx = alpha_idx,
                           clim=(min(alpha_coef), max(alpha_coef)), chan_mark_color='red' ,**kw_top)
+        
         cb_obj_2 = ColorbarObj(t_obj_2, cblabel='Alpha coefficients', **kw_cbar)
+        
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_2, row=0, col=2, title_color='black', width_max=600,height_max=800,
-                          title='Group 2')
+                          title='\n \n                            G alpha',
+                          title_size=24.0)
+        
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100,height_max=800)
-            
-        sc.preview()
+        
         
     
+    
+    gray = cv2.cvtColor(sc.render(), cv2.COLOR_BGR2GRAY)
+       
+    i_left = 0
+    i_right = gray.shape[1]-1
+    i_top = 0
+    i_bottom = gray.shape[0]-1
+    
+    while np.array_equal(gray[:,i_left],gray[:,0]):
+        i_left += 1
         
+    while np.array_equal(gray[:,i_right],gray[:,-1]):
+        i_right -= 1
         
+    while np.array_equal(gray[i_top,:],gray[0,:]):
+        i_top += 1
         
+    while np.array_equal(gray[i_bottom,:],gray[-1,:]):
+        i_bottom -= 1
+        
+    crop_sc = sc.render()[i_top-10:i_bottom+10,i_left-10:i_right+10]
+        
+    if ax is None:
+        fig, ax = plt.subplots(1,1)
+    else: 
+        fig = ax.get_figure()
+        
+    ax.imshow(crop_sc, interpolation = 'none')
+    #ax.set_visible(False)
+    ax.axis('off')
+    
+    if showfig == False:
+        plt.close(fig)       
+        
+    return fig
         
        
         
         
+def plot_TF_klimesch(psds_rest,psds_task, freqs, TF, showfig = True, ax = None):
+    """
+    Plot transition frequency
+    
+    Parameters:
+        psds: array
+            cross power spectral matrix (N_sources x N_freqs)
+        freqs: array
+            frequncies at which the psds is computed
+        TFbox
+    
+    """
+    # Normalize power spectrum 
+    psds_rest = psds_rest/psds_rest.sum(axis=1).reshape((psds_rest.shape[0],1))
+    psds_task = psds_task/psds_task.sum(axis=1).reshape((psds_task.shape[0],1))
+    
+    if ax is None:
+        fig, ax = plt.subplots(1,1)
+    else: 
+        fig = ax.get_figure()
         
+    ax.plot(freqs, psds_task.mean(axis=0), c=colors_orig[0], label = r'$G_{task}$')
+    ax.plot(freqs, psds_rest.mean(axis=0), c=colors_orig[1], label = r'$G_{rest}$')
+    ax.axvline(TF, c='k', label = 'TF = '+str(np.round(TF,decimals=2))+' Hz')
+    ax.grid()
+    ax.set_title('Klimesch''s method')
+    ax.legend()
+    ax.set_xlim(min(freqs),20)
+    ax.set_xlabel('frequency [Hz]')
+    if ax is None: fig.tight_layout()
+    
+    if showfig == False:
+        plt.close(fig)
+    
+    return fig
+       
         
         
