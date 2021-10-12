@@ -11,7 +11,6 @@ from sklearn.cluster import KMeans, MeanShift
 from visbrain.objects import ColorbarObj, SceneObj
 from .TopoObj_mod import TopoObj
 import warnings
-from mpl_render import RenderingImShow
 import cv2
 
     
@@ -745,23 +744,23 @@ def plot_chs(TFbox, ch_locs, method = None, showfig = True, ax = None):
         
     
     
-    gray = cv2.cvtColor(sc.render(), cv2.COLOR_BGR2GRAY)
+    image = sc.render()
        
     i_left = 0
-    i_right = gray.shape[1]-1
+    i_right = image.shape[1]-1
     i_top = 0
-    i_bottom = gray.shape[0]-1
+    i_bottom = image.shape[0]-1
     
-    while np.array_equal(gray[:,i_left],gray[:,0]):
+    while np.array_equal(image[:,i_left,:],image[:,0,:]):
         i_left += 1
         
-    while np.array_equal(gray[:,i_right],gray[:,-1]):
+    while np.array_equal(image[:,i_right,:],image[:,-1,:]):
         i_right -= 1
         
-    while np.array_equal(gray[i_top,:],gray[0,:]):
+    while np.array_equal(image[i_top,:,:],image[0,:,:]):
         i_top += 1
         
-    while np.array_equal(gray[i_bottom,:],gray[-1,:]):
+    while np.array_equal(image[i_bottom,:,:],image[-1,:,:]):
         i_bottom -= 1
         
     crop_sc = sc.render()[i_top-10:i_bottom+10,i_left-10:i_right+10]
