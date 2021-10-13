@@ -11,7 +11,6 @@ from sklearn.cluster import KMeans, MeanShift
 from visbrain.objects import ColorbarObj, SceneObj
 from .TopoObj_mod import TopoObj
 import warnings
-import cv2
 
     
 
