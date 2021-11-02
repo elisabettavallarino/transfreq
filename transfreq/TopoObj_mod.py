@@ -189,7 +189,7 @@ class TopoObj(VisbrainObject):
         # Channel's text :
         self.chan_text = visuals.Text(pos=pos, name='ChanText',
                                       parent=self.node_chan, anchor_x='center',
-                                      color=chan_txt_color,
+                                      color=chan_txt_color,bold=True,
                                       font_size=chan_size)
 
         # ================== CAMERA ==================
