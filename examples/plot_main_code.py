@@ -8,7 +8,8 @@ Short description
 
 
 import mne
-from transfreq import functions, viz
+from transfreq import compute_TF_klimesch, computeTF_auto
+from transfreq.viz import plot_TF, plot_TF_klimesch, plot_clustering, plot_chs
 import os.path as op
 import numpy as np
 import matplotlib.pyplot as plt
@@ -70,7 +71,7 @@ for ii in range(len(ch_names_rest)):
 
 ###########################################################################
 # compute TFbox automatically with the default method
-TFbox = functions.computeTF_auto(psds_rest, freqs, ch_names_rest)
+TFbox = computeTF_auto(psds_rest, freqs, ch_names_rest)
 
 ###########################################################################
 # plot TF, cluster and channel position
@@ -78,23 +79,23 @@ TFbox = functions.computeTF_auto(psds_rest, freqs, ch_names_rest)
 fig = plt.figure()
 gs = fig.add_gridspec(2,2)
 ax1 = fig.add_subplot(gs[0, 0])
-viz.plot_TF(psds_rest, freqs, TFbox, ax = ax1)
+plot_TF(psds_rest, freqs, TFbox, ax = ax1)
 ax2 = fig.add_subplot(gs[0, 1])
-viz.plot_clustering(TFbox,ax = ax2)
+plot_clustering(TFbox,ax = ax2)
 ax3 = fig.add_subplot(gs[1, :])
-viz.plot_chs(TFbox, ch_locs_rest, ax = ax3)
+plot_chs(TFbox, ch_locs_rest, ax = ax3)
 fig.tight_layout()
 
 
 ###########################################################################
 # compute TFbox with Klimesch's method
-TF_klimesch = functions.compute_TF_klimesch(psds_rest, psds_task, freqs)  
+TF_klimesch = compute_TF_klimesch(psds_rest, psds_task, freqs)
  
 ###########################################################################
 # plot transition frequency with klimesch's metod and transfreq to compare them
 
 fig, ax = plt.subplots(1,2,figsize=(8,4))
-viz.plot_TF_klimesch(psds_rest, psds_task, freqs, TF_klimesch, ax = ax[0])
-viz.plot_TF(psds_rest, freqs, TFbox, ax = ax[1])
+plot_TF_klimesch(psds_rest, psds_task, freqs, TF_klimesch, ax = ax[0])
+plot_TF(psds_rest, freqs, TFbox, ax = ax[1])
 fig.tight_layout()
 ###########################################################################

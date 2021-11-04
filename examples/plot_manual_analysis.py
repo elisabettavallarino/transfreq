@@ -6,9 +6,9 @@ Manula computation of the transition frequency for one subject with transfreq
 Short description
 """
 
-
 import mne
-from transfreq import functions, viz
+from transfreq import create_cluster, computeTF_manual
+from transfreq.viz import plot_psds, plot_coefficients, plot_chs, plot_clustering, plot_TF
 import os.path as op
 import numpy as np
 import matplotlib.pyplot as plt
@@ -53,7 +53,7 @@ for ii in range(len(ch_names)):
 
 ###########################################################################
 # plot power spectrum to visually chose theta and alpha ranges
-viz.plot_psds(psds, freqs, average = True)
+plot_psds(psds, freqs, average = True)
 
 ###########################################################################
 # set theta and alpha ranges
@@ -67,11 +67,11 @@ theta_range = [6.5,7]
 fig = plt.figure()
 gs = fig.add_gridspec(2,2)
 ax1 = fig.add_subplot(gs[0, :])
-viz.plot_coefficients(psds, freqs, ch_names, alpha_range=alpha_range,theta_range = theta_range,mode='1d',ax=ax1, order='sorted')
+plot_coefficients(psds, freqs, ch_names, alpha_range=alpha_range,theta_range = theta_range,mode='1d',ax=ax1, order='sorted')
 ax2 = fig.add_subplot(gs[1, 0])
-viz.plot_coefficients(psds, freqs, ch_names, alpha_range=alpha_range,theta_range = theta_range,mode='2d',ax=ax2)
+plot_coefficients(psds, freqs, ch_names, alpha_range=alpha_range,theta_range = theta_range,mode='2d',ax=ax2)
 ax3 = fig.add_subplot(gs[1, 1])
-viz.plot_psds(psds, freqs, average = True, ax = ax3)
+plot_psds(psds, freqs, average = True, ax = ax3)
 fig.tight_layout()
 
 
@@ -85,11 +85,11 @@ theta_chs_2d = ['C5','C3','T8']
 alpha_chs_2d = ['P4','P2','Pz','CP2','POz','Fp2','PO4','P1']  
 
 
-TFbox_1d = functions.create_cluster(psds, freqs, ch_names, theta_chs_1d, alpha_chs_1d, theta_range, alpha_range, method='my_method_1d')
-TFbox_2d = functions.create_cluster(psds, freqs, ch_names, theta_chs_2d, alpha_chs_2d, theta_range, alpha_range, method='my_method_2d')
+TFbox_1d = create_cluster(psds, freqs, ch_names, theta_chs_1d, alpha_chs_1d, theta_range, alpha_range, method='my_method_1d')
+TFbox_2d = create_cluster(psds, freqs, ch_names, theta_chs_2d, alpha_chs_2d, theta_range, alpha_range, method='my_method_2d')
 
-TFbox_1d = functions.computeTF_manual(psds, freqs, TFbox_1d)
-TFbox_2d = functions.computeTF_manual(psds, freqs, TFbox_2d)
+TFbox_1d = computeTF_manual(psds, freqs, TFbox_1d)
+TFbox_2d = computeTF_manual(psds, freqs, TFbox_2d)
 
 
 ###########################################################################
@@ -98,11 +98,11 @@ TFbox_2d = functions.computeTF_manual(psds, freqs, TFbox_2d)
 fig = plt.figure()
 gs = fig.add_gridspec(2,2)
 ax1 = fig.add_subplot(gs[0, :])
-viz.plot_chs(TFbox_1d, ch_locs, mode='1d', ax = ax1)
+plot_chs(TFbox_1d, ch_locs, mode='1d', ax = ax1)
 ax2 = fig.add_subplot(gs[1, 0])
-viz.plot_clustering(TFbox_1d,mode = '1d', order = 'sorted',ax = ax2)
+plot_clustering(TFbox_1d,mode = '1d', order = 'sorted',ax = ax2)
 ax3 = fig.add_subplot(gs[1, 1])
-viz.plot_TF(psds, freqs, TFbox_1d, ax = ax3)
+plot_TF(psds, freqs, TFbox_1d, ax = ax3)
 fig.tight_layout()
 
 
@@ -112,9 +112,9 @@ fig.tight_layout()
 fig = plt.figure()
 gs = fig.add_gridspec(2,2)
 ax1 = fig.add_subplot(gs[0, :])
-viz.plot_chs(TFbox_2d, ch_locs, mode='2d', ax = ax1)
+plot_chs(TFbox_2d, ch_locs, mode='2d', ax = ax1)
 ax2 = fig.add_subplot(gs[1, 0])
-viz.plot_clustering(TFbox_2d,mode = '2d', ax = ax2)
+plot_clustering(TFbox_2d,mode = '2d', ax = ax2)
 ax3 = fig.add_subplot(gs[1, 1])
-viz.plot_TF(psds, freqs, TFbox_2d, ax = ax3)
+plot_TF(psds, freqs, TFbox_2d, ax = ax3)
 fig.tight_layout()
