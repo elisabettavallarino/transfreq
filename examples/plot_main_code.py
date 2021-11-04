@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Authomatic computation of the transition frequency for one subject with transfreq and Klimesch's method
-===========================
+=======================================================================================================
 
 Short description
 """
 
 
 import mne
-from transfreq import functions
+from transfreq import functions, viz
 import os.path as op
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,7 +17,8 @@ import matplotlib.pyplot as plt
 subj = '001'
 ses = '01'
 
-data_folder = '/media/mida/Volume/data_rest_task'
+#data_folder = '/media/mida/Volume/data_rest_task'
+data_folder = '../'
 # define file paths
 f_name_rest = op.join(data_folder, 'sub-'+subj,'ses-'+ses,'eeg','sub-'+subj+'_ses-'+ses+'_task-eyeclose_raw.fif')
 f_name_task = op.join(data_folder, 'sub-'+subj,'ses-'+ses,'eeg','sub-'+subj+'_ses-'+ses+'_task-memory_raw.fif')
@@ -77,11 +78,11 @@ TFbox = functions.computeTF_auto(psds_rest, freqs, ch_names_rest)
 fig = plt.figure()
 gs = fig.add_gridspec(2,2)
 ax1 = fig.add_subplot(gs[0, 0])
-functions.plot_TF(psds_rest, freqs, TFbox, ax = ax1)  
+viz.plot_TF(psds_rest, freqs, TFbox, ax = ax1)
 ax2 = fig.add_subplot(gs[0, 1])
-functions.plot_clustering(TFbox,ax = ax2)
+viz.plot_clustering(TFbox,ax = ax2)
 ax3 = fig.add_subplot(gs[1, :])
-functions.plot_chs(TFbox, ch_locs_rest, ax = ax3)
+viz.plot_chs(TFbox, ch_locs_rest, ax = ax3)
 fig.tight_layout()
 
 
@@ -93,16 +94,7 @@ TF_klimesch = functions.compute_TF_klimesch(psds_rest, psds_task, freqs)
 # plot transition frequency with klimesch's metod and transfreq to compare them
 
 fig, ax = plt.subplots(1,2,figsize=(8,4))
-functions.plot_TF_klimesch(psds_rest, psds_task, freqs, TF_klimesch, ax = ax[0])
-functions.plot_TF(psds_rest, freqs, TFbox, ax = ax[1])
+viz.plot_TF_klimesch(psds_rest, psds_task, freqs, TF_klimesch, ax = ax[0])
+viz.plot_TF(psds_rest, freqs, TFbox, ax = ax[1])
 fig.tight_layout()
 ###########################################################################
-
-
-
-
-
-
-
-
-
