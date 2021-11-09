@@ -3,6 +3,15 @@ docs/_build
 docs/auto_examples/
 docs/modules/generated/
 docs/datasets/generated/
+docs/generated/
 
 # Distribution / packaging
 *.egg-info/
+
+# Pycharm
+.idea
+venv
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+transfreq/__pycache__
