@@ -10,21 +10,21 @@ colors_orig = ['C0', 'C1', '#aef956', 'C3', 'C4', 'C5']
 meth_names = ['1D thresholding', '1D Mean-Shift', '2D k-means', '2D adjusted k-means']
 
 
-def plot_clustering(TFbox, mode=None, order='standard', showfig=True, ax=None):
+def plot_clusters(tfbox, mode=None, order='standard', showfig=True, ax=None):
     """
-    Plot clustering
+    Plot clusters
 
     Parameters:
-        TFbox: dictionary
-            output of either create_cluster, computeTF_manual or computeTF_auto
+        tfbox: dictionary
+            output of either create_cluster, compute_transfreq_manual or compute_transfreq
         mode: None, '1d', '2d' (default None)
             mode to be used for plotting. If '1d' the ratio between alpha and
             theta coefficients will be plotted. If '2d' alpha and theta coefficients
             will be plotted on the plane. If None (default) and the method contained
-            in TFbox is 1, 2, 3 or 4 the mode will be set automatically.
+            in tfbox is 1, 2, 3 or 4 the mode will be set automatically.
         order: 'standard' or 'sorted' (default 'standard')
             Way to plot the coefficients (only when mode='1d' or the methods
-            contained in the TFbox is 1 or 2, otherwise is not considered)
+            contained in the tfbox is 1 or 2, otherwise is not considered)
         showfig: bool (default True)
             if True figure will be showed, if False figure will not be showed
         ax: instance of Axes | None
@@ -35,16 +35,16 @@ def plot_clustering(TFbox, mode=None, order='standard', showfig=True, ax=None):
             Figure representing the clustering
     """
 
-    if (mode == '2d' or (mode is None and TFbox['method'] in [3, 4])) and order == 'sorted':
+    if (mode == '2d' or (mode is None and tfbox['method'] in [3, 4])) and order == 'sorted':
         warnings.warn(
-            "order can only be 'standard' if mode is '2d' or mode is None and method in TFbox is 3 or 4. Automatically switched to 'standard'")
+            "order can only be 'standard' if mode is '2d' or mode is None and method in tfbox is 3 or 4. Automatically switched to 'standard'")
         order = 'standard'
 
-    cluster = TFbox['cluster']
+    cluster = tfbox['cluster']
 
-    if mode is None and TFbox['method'] not in [1, 2, 3, 4]:
+    if mode is None and tfbox['method'] not in [1, 2, 3, 4]:
         raise ValueError(" provide a mode, either '1d' or '2d' ")
-    method = TFbox['method']
+    method = tfbox['method']
 
     theta_coef = cluster.loc['theta_coef'].values
     alpha_coef = cluster.loc['alpha_coef'].values
@@ -126,15 +126,15 @@ def plot_coefficients(psds, freqs, ch_names, theta_range=None, alpha_range=None,
     Plot alpha and theta coefficients
 
     Parameters:
-        psds: array, shape (N_sources, N_freqs)
+        psds: array, shape (N_sensors, N_freqs)
             power spectral matrix
         freqs: array, shape (N_freqs,)
             frequencies at which the psds is computed
-        ch_names: list of strings
+        ch_names: None | list of strings (default None)
             name of the channels (must be ordered as they are in psds)
         theta_range: tuple | list | array (default (5,7))
             theta range to compute alpha coefficients (eg: (5,7), [5,7], np.array([5,7]))
-        alpha_range: tuple | list | array (default (AP-1,AP+1))
+        alpha_range: tuple | list | array (default (ap-1,ap+1))
             alpha range to compute theta coefficients (eg: (9,11), [9,11], np.array([9,11]))
         mode: '1d' or '2d' (default '2d')
             If '1d' the ratio between the alpha tha theta coefficients will be shown, if
@@ -155,14 +155,18 @@ def plot_coefficients(psds, freqs, ch_names, theta_range=None, alpha_range=None,
         order = 'standard'
     # Normalize power spectrum
     psds = psds / psds.sum(axis=1).reshape((psds.shape[0], 1))
-
+    
+    # define channel names if not given as input 
+    if ch_names is None: ch_names = ['ch'+'0'*(len(str(psds.shape[0]))-len(str(ch_idx+1)))+str(ch_idx+1) for ch_idx in range(psds.shape[0])]
+    
+    
     # individual alpha peak
     f_in_idx = np.where((freqs >= 7) & (freqs <= 13))[0]
-    AP = f_in_idx[0] + np.argmax(psds.mean(axis=0)[f_in_idx])
-    AP = freqs[AP]
+    ap = f_in_idx[0] + np.argmax(psds.mean(axis=0)[f_in_idx])
+    ap = freqs[ap]
 
     if alpha_range is None:
-        f_alpha_idx = np.where((freqs >= AP - 1) & (freqs <= AP + 1))[0]
+        f_alpha_idx = np.where((freqs >= ap - 1) & (freqs <= ap + 1))[0]
     elif len(alpha_range) != 2:
         raise ValueError("len(alpha_range) must be 2")
     elif alpha_range[0] < freqs[0] or alpha_range[-1] > freqs[-1]:
@@ -173,10 +177,10 @@ def plot_coefficients(psds, freqs, ch_names, theta_range=None, alpha_range=None,
         f_alpha_idx = np.where((freqs >= alpha_range[0]) & (freqs <= alpha_range[1]))[0]
 
     if theta_range is None:
-        if AP - 1 > 7:
+        if ap - 1 > 7:
             f_theta_idx = np.where((freqs >= 5) & (freqs <= 7))[0]
         else:
-            f_theta_idx = np.where((freqs >= AP - 3) & (freqs < AP - 1))[0]
+            f_theta_idx = np.where((freqs >= ap - 3) & (freqs < ap - 1))[0]
     elif len(theta_range) != 2:
         raise ValueError("len(theta_range) must be 2")
     elif theta_range[0] < freqs[0] or theta_range[-1] > freqs[-1]:
@@ -241,20 +245,20 @@ def plot_coefficients(psds, freqs, ch_names, theta_range=None, alpha_range=None,
     return fig
 
 
-def plot_chs(TFbox, ch_locs, mode=None, showfig=True, ax=None):
+def plot_channels(tfbox, ch_locs, mode=None, showfig=True, ax=None):
     """
     Plot clustered channels on head topomap
 
     Parameters:
-        TFbox: dictionary
-            output of either create_cluster, computeTF_manual or computeTF_auto
+        tfbox: dictionary
+            output of either create_cluster, compute_transfreq_manual or compute_transfreq
         ch_locs: array, shape (N_channels, 3)
             channels locations (unit of measure: mm),
         mode: None, '1d', '2d' (default None)
             mode to be used for plotting. If '1d' the ratio between alpha and
             theta coefficients will be plotted. If '2d' alpha and theta coefficients
             will be plotted on the plane. If None (default) and the method contained
-            in TFbox is 1, 2, 3 of 4 the mode will be set automatically.
+            in tfbox is 1, 2, 3 of 4 the mode will be set automatically.
         showfig: bool (default True)
             if True figure will be showed, if False figure will not be showed
         ax: instance of Axes | None
@@ -265,15 +269,15 @@ def plot_chs(TFbox, ch_locs, mode=None, showfig=True, ax=None):
             Figure representing the clustered channels on head topomap
     """
 
-    if mode is None and TFbox['method'] not in [1, 2, 3, 4]:
+    if mode is None and tfbox['method'] not in [1, 2, 3, 4]:
         raise ValueError(" provide a mode, either '1d' or '2d' ")
 
-    method = TFbox['method']
+    method = tfbox['method']
 
-    theta_coef = TFbox['cluster'].loc['theta_coef'].values
-    alpha_coef = TFbox['cluster'].loc['alpha_coef'].values
-    labels = TFbox['cluster'].loc['labels'].values
-    ch_names = TFbox['cluster'].columns.tolist()
+    theta_coef = tfbox['cluster'].loc['theta_coef'].values
+    alpha_coef = tfbox['cluster'].loc['alpha_coef'].values
+    labels = tfbox['cluster'].loc['labels'].values
+    ch_names = tfbox['cluster'].columns.tolist()
     theta_idx = np.where(labels == 0)[0]
     alpha_idx = np.where(labels == 1)[0]
 
@@ -382,17 +386,17 @@ def plot_chs(TFbox, ch_locs, mode=None, showfig=True, ax=None):
     return fig
 
 
-def plot_TF(psds, freqs, TFbox, showfig=True, ax=None):
+def plot_transfreq(psds, freqs, tfbox, showfig=True, ax=None):
     """
     Plot alpha and theta power spectra profiles and the transition frequency
 
     Parameters:
-        psds: array, shape (N_sources, N_freqs)
+        psds: array, shape (N_sensors, N_freqs)
             power spectral matrix
         freqs: array, shape (N_freqs,)
             frequncies at which the psds is computed
-        TFbox: dictionary
-            output of either create_cluster, computeTF_manual or computeTF_auto
+        tfbox: dictionary
+            output of either create_cluster, compute_transfreq_manual or compute_transfreq
         showfig: bool (default True)
             if True figure will be showed, if False figure will not be showed
         ax: instance of Axes | None
@@ -404,16 +408,16 @@ def plot_TF(psds, freqs, TFbox, showfig=True, ax=None):
 
     """
 
-    if TFbox['TF'] is None:
-        raise ValueError("Cannot plot TF because its value is None. Please compute TF before using this function")
+    if tfbox['tf'] is None:
+        raise ValueError("Cannot plot tf because its value is None. Please compute tf before using this function")
 
         # Normalize power spectrum
     psds = psds / psds.sum(axis=1).reshape((psds.shape[0], 1))
 
-    theta_coef = TFbox['cluster'].loc['theta_coef'].values
-    alpha_coef = TFbox['cluster'].loc['alpha_coef'].values
-    labels = TFbox['cluster'].loc['labels'].values
-    method = TFbox['method']
+    theta_coef = tfbox['cluster'].loc['theta_coef'].values
+    alpha_coef = tfbox['cluster'].loc['alpha_coef'].values
+    labels = tfbox['cluster'].loc['labels'].values
+    method = tfbox['method']
     theta_idx = np.where(labels == 0)[0]
     alpha_idx = np.where(labels == 1)[0]
 
@@ -427,7 +431,7 @@ def plot_TF(psds, freqs, TFbox, showfig=True, ax=None):
 
     ax.plot(freqs, theta_psds, c=colors_orig[0], label=r'$S_{\theta}$')
     ax.plot(freqs, alpha_psds, c=colors_orig[1], label=r'$S_{\alpha}$')
-    ax.axvline(TFbox['TF'], c='k', label='TF=' + str(np.round(TFbox['TF'], decimals=2)) + ' Hz')
+    ax.axvline(tfbox['tf'], c='k', label='TF=' + str(np.round(tfbox['tf'], decimals=2)) + ' Hz')
     ax.grid()
     if method in [1, 2, 3, 4]:
         ax.set_title('Method ' + str(method) + ': ' + meth_names[method - 1])
@@ -446,20 +450,20 @@ def plot_TF(psds, freqs, TFbox, showfig=True, ax=None):
     return fig
 
 
-def plot_TF_klimesch(psds_rest, psds_task, freqs, TF, showfig=True, ax=None):
+def plot_transfreq_klimesch(psds_rest, psds_task, freqs, tf, showfig=True, ax=None):
     """
     Plot rest and task power spectra profiles and the transition frequencycomputed with
     Klimesch's method
 
     Parameters:
-        psds_rest: array, shape (N_sources, N_freqs)
+        psds_rest: array, shape (N_sensors, N_freqs)
             power spectral matrix of the resting state data
-        psds_task: array, shape (N_sources, N_freqs)
+        psds_task: array, shape (N_sensors, N_freqs)
             power spectral matrix of the data recorded dunring a task execution
         freqs: array, shape (N_freqs,)
             frequncies at which the psds is computed
-        TF: scalar
-            the TF computed with Klimesch's method (output of computeTF_klimesch)
+        tf: scalar
+            the tf computed with Klimesch's method (output of compute_transfreq_klimesch)
         showfig: bool (default True)
             if True figure will be showed, if False figure will not be showed
         ax: instance of Axes | None
@@ -482,7 +486,7 @@ def plot_TF_klimesch(psds_rest, psds_task, freqs, TF, showfig=True, ax=None):
 
     ax.plot(freqs, psds_task.mean(axis=0), c=colors_orig[0], label=r'$S^{task}$')
     ax.plot(freqs, psds_rest.mean(axis=0), c=colors_orig[1], label=r'$S^{rest}$')
-    ax.axvline(TF, c='k', label='TF=' + str(np.round(TF, decimals=2)) + ' Hz')
+    ax.axvline(tf, c='k', label='TF=' + str(np.round(tf, decimals=2)) + ' Hz')
     ax.grid()
     ax.set_title("Klimesch's method")
     ax.legend()
@@ -503,7 +507,7 @@ def plot_psds(psds, freqs, average=True, showfig=True, ax=None):
     Plot normalised power spectrum
 
     Parameters:
-        psds: array, shape (N_sources, N_freqs)
+        psds: array, shape (N_sensors, N_freqs)
             power spectral matrix
         freqs: array, shape (N_freqs,)
             frequncies at which the psds is computed
