@@ -55,9 +55,12 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+examples_dirs = ['../examples', '../examples_paper']
+gallery_dirs = ['auto_examples', 'auto_paper', ]
+
 sphinx_gallery_conf = {
-     'examples_dirs': '../examples',   # path to your example scripts
-     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+     'examples_dirs': examples_dirs,   # path to your example scripts
+     'gallery_dirs': gallery_dirs,  # path to where to save gallery generated output
      'image_scrapers': ('matplotlib'), # figures extension to be embedded
 }
 

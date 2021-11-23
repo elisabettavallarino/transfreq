@@ -29,6 +29,7 @@ If you use this code in your project, please consider citing our work:
 
     api
     auto_examples/index
+    auto_paper/index
 
 
 

@@ -1,11 +1,9 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov  4 11:37:25 2021
-
-@author: mida
+Part 4
+======
+Description
 """
-
 
 
 from transfreq.viz import plot_channels, plot_transfreq_klimesch, plot_transfreq

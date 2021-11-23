@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov  3 14:34:55 2021
-
-@author: mida
+Aux func
+========
+Description
 """
 
 import mne

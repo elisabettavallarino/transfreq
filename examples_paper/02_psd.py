@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov  4 09:41:09 2021
-
-@author: mida
+Part 2
+======
+Description
 """
 
 import mne

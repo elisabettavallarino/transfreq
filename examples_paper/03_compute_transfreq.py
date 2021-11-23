@@ -1,9 +1,8 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov  4 11:27:31 2021
-
-@author: mida
+Part 3
+======
+Description
 """
 
 from transfreq import compute_transfreq, compute_transfreq_klimesch
