@@ -11,21 +11,17 @@ import mne
 from transfreq import compute_transfreq_klimesch, compute_transfreq
 from transfreq.viz import (plot_transfreq, plot_transfreq_klimesch, 
                            plot_clusters, plot_channels)
+from transfreq.utils import read_sample_datapath
 import os.path as op
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-subj = '001'
-ses = '01'
-
-#data_folder = '/media/mida/Volume/data_rest_task'
-data_folder = '/home/mida/Desktop/Betta/tmp_data_pathTF/preproc_files'
+subj = 'transfreq_sample'
+data_folder = read_sample_datapath()
 # define file paths
-f_name_rest = op.join(data_folder, 'sub'+subj,'ses'+ses,
-                      'sub-'+subj+'_ses-'+ses+'_task-eyeclose_raw.fif')
-f_name_task = op.join(data_folder, 'sub'+subj,'ses'+ses,
-                      'sub-'+subj+'_ses-'+ses+'_task-memory_raw.fif')
+f_name_rest = op.join(data_folder, '{}_resting.fif'.format(subj))
+f_name_task = op.join(data_folder, '{}_evoked.fif'.format(subj))
 
 # load resting state data
 raw_rest = mne.io.read_raw_fif(f_name_rest)
