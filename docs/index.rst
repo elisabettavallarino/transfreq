@@ -6,12 +6,13 @@
 transfreq
 =========
 
-transfreq is a Python3 library for automatically computing the individual 
-transition frequency from alpha to theta band. transreq only requires in 
-input the power density of EEG data recorded during a resting state.  
+Welcome to the documentation of transfreq, a Python3 library for automatically 
+computing the individual transition frequency from alpha to theta band. 
+transreq only requires in input the power density of EEG data recorded during a 
+resting state.  
 
 A detailed description of the algorithm implemented in transfreq can be found
-in the origial paper [1]_
+in the origial paper [1]_ .
 
 Installation
 ============
