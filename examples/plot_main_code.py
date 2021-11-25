@@ -37,7 +37,7 @@ tmp_idx = mne.pick_types(raw_rest.info, eeg=True, exclude='bads')
 ch_names_rest = [raw_rest.ch_names[ch_idx] for ch_idx in tmp_idx]
 
 tmp_idx = mne.pick_types(raw_task.info, eeg=True, exclude='bads')
-ch_names_task = [raw_rest.ch_names[ch_idx] for ch_idx in tmp_idx]
+ch_names_task = [raw_task.ch_names[ch_idx] for ch_idx in tmp_idx]
 
 # Define time range. The length of both recordings is set equal to the length of
 # the shortest one. In this way we obtain the same frequency resolution when

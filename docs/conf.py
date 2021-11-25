@@ -10,7 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
+import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 from visbrain.config import CONFIG
@@ -62,6 +62,7 @@ sphinx_gallery_conf = {
      'examples_dirs': examples_dirs,   # path to your example scripts
      'gallery_dirs': gallery_dirs,  # path to where to save gallery generated output
      'image_scrapers': ('matplotlib'), # figures extension to be embedded
+     'default_thumb_file': os.path.join('_static', 'ex_tf.png'),
 }
 
 CONFIG['MPL_RENDER'] = True # Embed visbrain figures in the documentation

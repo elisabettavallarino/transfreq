@@ -19,3 +19,4 @@ transfreq/__pycache__
 
 # Downloaded data
 transfreq_data/
+transfreq_data_preproc/
