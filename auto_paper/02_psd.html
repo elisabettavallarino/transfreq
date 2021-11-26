@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Part 3: Compute power spectra &#8212; transfreq 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Preprocessing routine" href="preprocessing_info.html" />
+    <link rel="prev" title="Part 5: Plot results" href="04_plots.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          transfreq</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="index.html">Reproducing paper results</a></li>
+                <li><a href="https://github.com/elisabettavallarino/transfreq">GitHub</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/auto_paper/02_psd.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-paper-02-psd-py"><span class="std std-ref">here</span></a> to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="part-3-compute-power-spectra">
+<span id="sphx-glr-auto-paper-02-psd-py"></span><h1>Part 3: Compute power spectra<a class="headerlink" href="#part-3-compute-power-spectra" title="Permalink to this headline">¶</a></h1>
+<p>Compute the power sectra of the pre-processed EEG recording by using multitaper
+method</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mne</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">makedirs</span>
+</pre></div>
+</div>
+<p>Define data paths</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># local folder where to store the output of the analysis</span>
+<span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cwd</span><span class="p">,</span> <span class="s1">&#39;transfreq_data_preproc&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+        <span class="s1">&#39;Cannot find data in </span><span class="si">{}</span><span class="s1">. Please run preprocessing first.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data_path</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>All the subject in the dataset</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">subjs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;001&#39;</span><span class="p">,</span> <span class="s1">&#39;002&#39;</span><span class="p">,</span> <span class="s1">&#39;003&#39;</span><span class="p">,</span> <span class="s1">&#39;004&#39;</span><span class="p">,</span> <span class="s1">&#39;005&#39;</span><span class="p">,</span> <span class="s1">&#39;006&#39;</span><span class="p">,</span> <span class="s1">&#39;007&#39;</span><span class="p">,</span> <span class="s1">&#39;008&#39;</span><span class="p">,</span> <span class="s1">&#39;009&#39;</span><span class="p">,</span> <span class="s1">&#39;010&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;011&#39;</span><span class="p">,</span> <span class="s1">&#39;012&#39;</span><span class="p">,</span> <span class="s1">&#39;013&#39;</span><span class="p">,</span> <span class="s1">&#39;014&#39;</span><span class="p">,</span> <span class="s1">&#39;015&#39;</span><span class="p">,</span> <span class="s1">&#39;016&#39;</span><span class="p">,</span> <span class="s1">&#39;017&#39;</span><span class="p">,</span> <span class="s1">&#39;018&#39;</span><span class="p">,</span> <span class="s1">&#39;019&#39;</span><span class="p">,</span> <span class="s1">&#39;020&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;021&#39;</span><span class="p">,</span> <span class="s1">&#39;022&#39;</span><span class="p">,</span> <span class="s1">&#39;023&#39;</span><span class="p">,</span> <span class="s1">&#39;024&#39;</span><span class="p">,</span> <span class="s1">&#39;025&#39;</span><span class="p">,</span> <span class="s1">&#39;026&#39;</span><span class="p">,</span> <span class="s1">&#39;027&#39;</span><span class="p">,</span> <span class="s1">&#39;028&#39;</span><span class="p">,</span> <span class="s1">&#39;029&#39;</span><span class="p">,</span> <span class="s1">&#39;030&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;031&#39;</span><span class="p">,</span> <span class="s1">&#39;032&#39;</span><span class="p">,</span> <span class="s1">&#39;033&#39;</span><span class="p">,</span> <span class="s1">&#39;034&#39;</span><span class="p">,</span> <span class="s1">&#39;035&#39;</span><span class="p">,</span> <span class="s1">&#39;036&#39;</span><span class="p">,</span> <span class="s1">&#39;037&#39;</span><span class="p">,</span> <span class="s1">&#39;038&#39;</span><span class="p">,</span> <span class="s1">&#39;039&#39;</span><span class="p">,</span> <span class="s1">&#39;040&#39;</span><span class="p">,</span>
+         <span class="s1">&#39;041&#39;</span><span class="p">,</span> <span class="s1">&#39;042&#39;</span><span class="p">,</span> <span class="s1">&#39;043&#39;</span><span class="p">,</span> <span class="s1">&#39;044&#39;</span><span class="p">,</span> <span class="s1">&#39;045&#39;</span><span class="p">,</span> <span class="s1">&#39;046&#39;</span><span class="p">,</span> <span class="s1">&#39;047&#39;</span><span class="p">,</span> <span class="s1">&#39;048&#39;</span><span class="p">,</span> <span class="s1">&#39;049&#39;</span><span class="p">,</span> <span class="s1">&#39;050&#39;</span><span class="p">]</span>
+<span class="n">sess</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;01&#39;</span><span class="p">,</span> <span class="s1">&#39;02&#39;</span><span class="p">]</span>
+
+<span class="c1"># Define some parameters for the psd computation</span>
+<span class="n">bandwidth</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fmin</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">fmax</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="c1"># Compute psd of the preprocessed data</span>
+<span class="n">data_rest</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">data_task</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">subj</span> <span class="ow">in</span> <span class="n">subjs</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;preproc_files&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="o">+</span><span class="n">subj</span><span class="p">)):</span>
+        <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">data_task</span><span class="p">[</span><span class="n">subj</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ses</span> <span class="ow">in</span> <span class="n">sess</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;preproc_files&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="o">+</span><span class="n">subj</span><span class="p">,</span>
+                                      <span class="s1">&#39;ses&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ses</span><span class="p">))):</span>
+                <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">data_task</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="c1"># file paths</span>
+                <span class="n">f_name_rest</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;preproc_files&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="o">+</span><span class="n">subj</span><span class="p">,</span>
+                                      <span class="s1">&#39;ses&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ses</span><span class="p">),</span> <span class="s1">&#39;sub-&#39;</span><span class="o">+</span><span class="n">subj</span><span class="o">+</span><span class="s1">&#39;_ses-&#39;</span> <span class="o">+</span>
+                                      <span class="n">ses</span><span class="o">+</span><span class="s1">&#39;_task-eyeclose_raw.fif&#39;</span><span class="p">)</span>
+                <span class="n">f_name_task</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;preproc_files&#39;</span><span class="p">,</span> <span class="s1">&#39;sub&#39;</span><span class="o">+</span><span class="n">subj</span><span class="p">,</span>
+                                      <span class="s1">&#39;ses&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ses</span><span class="p">),</span> <span class="s1">&#39;sub-&#39;</span><span class="o">+</span><span class="n">subj</span><span class="o">+</span><span class="s1">&#39;_ses-&#39;</span> <span class="o">+</span>
+                                      <span class="n">ses</span><span class="o">+</span><span class="s1">&#39;_task-memory_raw.fif&#39;</span><span class="p">)</span>
+
+                <span class="c1"># load data - rest</span>
+                <span class="n">raw_rest</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_raw_fif</span><span class="p">(</span><span class="n">f_name_rest</span><span class="p">)</span>
+                <span class="n">raw_rest</span> <span class="o">=</span> <span class="n">raw_rest</span><span class="o">.</span><span class="n">pick_types</span><span class="p">(</span><span class="n">eeg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                               <span class="n">exclude</span><span class="o">=</span><span class="n">raw_rest</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;bads&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                               <span class="p">[</span><span class="s1">&#39;TP9&#39;</span><span class="p">,</span> <span class="s1">&#39;TP10&#39;</span><span class="p">,</span> <span class="s1">&#39;FT9&#39;</span><span class="p">,</span> <span class="s1">&#39;FT10&#39;</span><span class="p">])</span>
+
+                <span class="c1"># load data - task</span>
+                <span class="n">raw_task</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_raw_fif</span><span class="p">(</span><span class="n">f_name_task</span><span class="p">)</span>
+                <span class="n">raw_task</span> <span class="o">=</span> <span class="n">raw_task</span><span class="o">.</span><span class="n">pick_types</span><span class="p">(</span><span class="n">eeg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                               <span class="n">exclude</span><span class="o">=</span><span class="n">raw_task</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;bads&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                               <span class="p">[</span><span class="s1">&#39;TP9&#39;</span><span class="p">,</span> <span class="s1">&#39;TP10&#39;</span><span class="p">,</span> <span class="s1">&#39;FT9&#39;</span><span class="p">,</span> <span class="s1">&#39;FT10&#39;</span><span class="p">])</span>
+
+                <span class="c1"># set time interval so that raw_rest and raw_task have the same</span>
+                <span class="c1"># duration</span>
+                <span class="n">tmin</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">tmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">raw_rest</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">raw_task</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="c1"># save channel names (only for resting data)</span>
+                <span class="n">ch_idxs</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">pick_types</span><span class="p">(</span><span class="n">raw_rest</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">eeg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="s1">&#39;bads&#39;</span><span class="p">)</span>
+                <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">raw_rest</span><span class="o">.</span><span class="n">ch_names</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span>
+                                                    <span class="k">for</span> <span class="n">ch_idx</span> <span class="ow">in</span> <span class="n">ch_idxs</span><span class="p">]</span>
+
+                <span class="c1"># save channel locations</span>
+                <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_locs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_names&#39;</span><span class="p">]),</span> <span class="mi">3</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_names&#39;</span><span class="p">])):</span>
+                    <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_locs&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">raw_rest</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;chs&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;loc&#39;</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span>
+
+                <span class="c1"># compute power spectrum with multitaper - rest</span>
+                <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;psds&#39;</span><span class="p">],</span> <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;freqs&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                    <span class="n">mne</span><span class="o">.</span><span class="n">time_frequency</span><span class="o">.</span><span class="n">psd_multitaper</span><span class="p">(</span><span class="n">raw_rest</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span>
+                                                      <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">bandwidth</span><span class="p">,</span>
+                                                      <span class="n">picks</span><span class="o">=</span><span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;ch_names&#39;</span><span class="p">])</span>
+
+                <span class="c1"># compute power spectrum with multitaper - task</span>
+                <span class="n">ch_idxs</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">pick_types</span><span class="p">(</span><span class="n">raw_task</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">eeg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="s1">&#39;bads&#39;</span><span class="p">)</span>
+                <span class="n">ch_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">raw_task</span><span class="o">.</span><span class="n">ch_names</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">ch_idx</span> <span class="ow">in</span> <span class="n">ch_idxs</span><span class="p">]</span>
+
+                <span class="n">data_task</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;psds&#39;</span><span class="p">],</span> <span class="n">data_task</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;freqs&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                    <span class="n">mne</span><span class="o">.</span><span class="n">time_frequency</span><span class="o">.</span><span class="n">psd_multitaper</span><span class="p">(</span><span class="n">raw_task</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span>
+                                                      <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span> <span class="n">bandwidth</span><span class="o">=</span><span class="n">bandwidth</span><span class="p">,</span>
+                                                      <span class="n">picks</span><span class="o">=</span><span class="n">ch_names</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">)):</span>
+    <span class="n">makedirs</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">))</span>
+<span class="n">data_rest_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">,</span> <span class="s1">&#39;data_rest.pkl&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+<span class="n">data_task_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">,</span> <span class="s1">&#39;data_task.pkl&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+<span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_rest</span><span class="p">,</span> <span class="n">data_rest_file</span><span class="p">)</span>
+<span class="n">data_rest_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data_task</span><span class="p">,</span> <span class="n">data_task_file</span><span class="p">)</span>
+<span class="n">data_task_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-paper-02-psd-py">
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/616f7f3e9f68d8699f9936344d94f084/02_psd.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">02_psd.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/c9aa5589ed031c6ce780ac0c303e4b8f/02_psd.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">02_psd.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.viz`.plot_channels
+===============================================
+
+.. currentmodule:: transfreq.viz
+
+.. autofunction:: plot_channels
+
+.. include:: transfreq.viz.plot_channels.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>

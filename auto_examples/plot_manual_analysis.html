@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compute transition frequency from custom clusters &#8212; transfreq 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Authomatic computation of the transition frequency" href="plot_main_code.html" />
+    <link rel="prev" title="General examples" href="index.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          transfreq</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="index.html">Examples</a></li>
+                <li><a href="../auto_paper/index.html">Reproducing paper results</a></li>
+                <li><a href="https://github.com/elisabettavallarino/transfreq">GitHub</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/auto_examples/plot_manual_analysis.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-examples-plot-manual-analysis-py"><span class="std std-ref">here</span></a> to download the full example code</p>
+</div>
+<div class="sphx-glr-example-title section" id="compute-transition-frequency-from-custom-clusters">
+<span id="sphx-glr-auto-examples-plot-manual-analysis-py"></span><h1>Compute transition frequency from custom clusters<a class="headerlink" href="#compute-transition-frequency-from-custom-clusters" title="Permalink to this headline">¶</a></h1>
+<p>This examples shows how to define two custom clusters of sensors and
+how to compute the corresponding theta-to-alpha transition frequency.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mne</span>
+<span class="kn">from</span> <span class="nn">transfreq</span> <span class="kn">import</span> <span class="n">compute_transfreq_manual</span>
+<span class="kn">from</span> <span class="nn">transfreq.viz</span> <span class="kn">import</span> <span class="p">(</span><span class="n">plot_psds</span><span class="p">,</span> <span class="n">plot_coefficients</span><span class="p">,</span> <span class="n">plot_channels</span><span class="p">,</span>
+                           <span class="n">plot_clusters</span><span class="p">,</span> <span class="n">plot_transfreq</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">transfreq.utils</span> <span class="kn">import</span> <span class="n">read_sample_datapath</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="c1"># Define path to the data</span>
+<span class="n">subj</span> <span class="o">=</span> <span class="s1">&#39;transfreq_sample&#39;</span>
+<span class="n">data_folder</span> <span class="o">=</span> <span class="n">read_sample_datapath</span><span class="p">()</span>
+<span class="n">f_name</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_folder</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_resting.fif&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subj</span><span class="p">))</span>
+
+<span class="c1"># Load resting state data</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">read_raw_fif</span><span class="p">(</span><span class="n">f_name</span><span class="p">)</span>
+
+<span class="c1"># List of good channels</span>
+<span class="n">tmp_idx</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">pick_types</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="n">eeg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="s1">&#39;bads&#39;</span><span class="p">)</span>
+<span class="n">ch_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">raw</span><span class="o">.</span><span class="n">ch_names</span><span class="p">[</span><span class="n">ch_idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">ch_idx</span> <span class="ow">in</span> <span class="n">tmp_idx</span><span class="p">]</span>
+
+<span class="c1"># Compute power spectra</span>
+<span class="n">n_fft</span> <span class="o">=</span> <span class="mi">512</span><span class="o">*</span><span class="mi">2</span>
+<span class="n">bandwidth</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">fmin</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">fmax</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">sfreq</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;sfreq&#39;</span><span class="p">]</span>
+<span class="n">n_per_seg</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sfreq</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">mne</span><span class="o">.</span><span class="n">time_frequency</span><span class="o">.</span><span class="n">psd_multitaper</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">fmin</span><span class="o">=</span><span class="n">fmin</span><span class="p">,</span> <span class="n">fmax</span><span class="o">=</span><span class="n">fmax</span><span class="p">,</span>
+                                                <span class="n">bandwidth</span><span class="o">=</span><span class="n">bandwidth</span><span class="p">)</span>
+
+<span class="c1"># Read channel positions</span>
+<span class="n">ch_locs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">psds</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">psds</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">ch_locs</span><span class="p">[</span><span class="n">ii</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;chs&#39;</span><span class="p">][</span><span class="n">ii</span><span class="p">][</span><span class="s1">&#39;loc&#39;</span><span class="p">][:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Opening raw data file /home/sara/Documenti/San_Martino_Alzhaimer/transition_frequency/transfreq/data/transfreq_sample_resting.fif...
+/home/sara/Documenti/San_Martino_Alzhaimer/transition_frequency/examples/plot_manual_analysis.py:25: RuntimeWarning: This filename (/home/sara/Documenti/San_Martino_Alzhaimer/transition_frequency/transfreq/data/transfreq_sample_resting.fif) does not conform to MNE naming conventions. All raw files should end with raw.fif, raw_sss.fif, raw_tsss.fif, _meg.fif, _eeg.fif, _ieeg.fif, raw.fif.gz, raw_sss.fif.gz, raw_tsss.fif.gz, _meg.fif.gz, _eeg.fif.gz or _ieeg.fif.gz
+  raw = mne.io.read_raw_fif(f_name)
+    Range : 0 ... 29558 =      0.000 ...    59.116 secs
+Ready.
+    Using multitaper spectrum estimation with 57 DPSS windows
+</pre></div>
+</div>
+<p>Plot power spectrum to visually chose theta and alpha ranges</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plot_psds</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_manual_analysis_001.png" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_manual_analysis_001.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;Figure size 640x480 with 1 Axes&gt;
+</pre></div>
+</div>
+<p>set theta and alpha ranges</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alpha_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">]</span>
+<span class="n">theta_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">6.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Plot alpha and theta coefficients. In the 1D visualisation
+the ratio between alpha and theta coefficients is plotted. In the 2d
+visualisation a scatter-plot of the alpha and theta coefficients is shown.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plot_coefficients</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">ch_names</span><span class="o">=</span><span class="n">ch_names</span><span class="p">,</span> <span class="n">alpha_range</span><span class="o">=</span><span class="n">alpha_range</span><span class="p">,</span>
+                  <span class="n">theta_range</span><span class="o">=</span><span class="n">theta_range</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;sorted&#39;</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_coefficients</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">ch_names</span><span class="o">=</span><span class="n">ch_names</span><span class="p">,</span> <span class="n">alpha_range</span><span class="o">=</span><span class="n">alpha_range</span><span class="p">,</span>
+                  <span class="n">theta_range</span><span class="o">=</span><span class="n">theta_range</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;2d&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="c1"># Plot the corresponding averaged power spectra.</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_psds</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_manual_analysis_002.png" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_manual_analysis_002.png" />
+<p>Chose channels from the figure to manually define the clusters and compute
+the corresponding transition frequency</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># First definition by looking at the 1D plot</span>
+<span class="n">theta_chs_1d</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="s1">&#39;T8&#39;</span><span class="p">,</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;C6&#39;</span><span class="p">]</span>
+<span class="n">alpha_chs_1d</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;P4&#39;</span><span class="p">,</span> <span class="s1">&#39;P2&#39;</span><span class="p">,</span> <span class="s1">&#39;CP2&#39;</span><span class="p">]</span>
+
+<span class="c1"># Second definition by looking at the 2D plot</span>
+<span class="n">theta_chs_2d</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">,</span> <span class="s1">&#39;T8&#39;</span><span class="p">]</span>
+<span class="n">alpha_chs_2d</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;P4&#39;</span><span class="p">,</span> <span class="s1">&#39;P2&#39;</span><span class="p">,</span> <span class="s1">&#39;Pz&#39;</span><span class="p">,</span> <span class="s1">&#39;CP2&#39;</span><span class="p">,</span> <span class="s1">&#39;POz&#39;</span><span class="p">,</span> <span class="s1">&#39;Fp2&#39;</span><span class="p">,</span> <span class="s1">&#39;PO4&#39;</span><span class="p">,</span> <span class="s1">&#39;P1&#39;</span><span class="p">]</span>
+
+<span class="n">tfbox_1d</span> <span class="o">=</span> <span class="n">compute_transfreq_manual</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">theta_chs_1d</span><span class="p">,</span> <span class="n">alpha_chs_1d</span><span class="p">,</span>
+                                    <span class="n">ch_names</span><span class="o">=</span><span class="n">ch_names</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="n">theta_range</span><span class="p">,</span>
+                                    <span class="n">alpha_range</span><span class="o">=</span><span class="n">alpha_range</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;my_method_1d&#39;</span><span class="p">)</span>
+<span class="n">tfbox_2d</span> <span class="o">=</span> <span class="n">compute_transfreq_manual</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">theta_chs_2d</span><span class="p">,</span> <span class="n">alpha_chs_2d</span><span class="p">,</span>
+                                    <span class="n">ch_names</span><span class="o">=</span><span class="n">ch_names</span><span class="p">,</span> <span class="n">theta_range</span><span class="o">=</span><span class="n">theta_range</span><span class="p">,</span>
+                                    <span class="n">alpha_range</span><span class="o">=</span><span class="n">alpha_range</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;my_method_2d&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot results obtained with the first definition of the clusters (1D)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plot_channels</span><span class="p">(</span><span class="n">tfbox_1d</span><span class="p">,</span> <span class="n">ch_locs</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_clusters</span><span class="p">(</span><span class="n">tfbox_1d</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;1d&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;sorted&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_transfreq</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">tfbox_1d</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_manual_analysis_003.png" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_manual_analysis_003.png" />
+<p>Plot results obtained with the second definition of the clusters (2D)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_gridspec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+<span class="n">plot_channels</span><span class="p">(</span><span class="n">tfbox_2d</span><span class="p">,</span> <span class="n">ch_locs</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;2d&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="n">plot_clusters</span><span class="p">(</span><span class="n">tfbox_2d</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;2d&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+<span class="n">ax3</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">plot_transfreq</span><span class="p">(</span><span class="n">psds</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">tfbox_2d</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_manual_analysis_004.png" class="sphx-glr-single-img" src="../_images/sphx_glr_plot_manual_analysis_004.png" />
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  13.106 seconds)</p>
+<div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-manual-analysis-py">
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/6e18665ea313d9cdbe6a0209f4b41dcb/plot_manual_analysis.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_manual_analysis.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/d6e130e9b1fbcc231866f43f83c8a610/plot_manual_analysis.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_manual_analysis.ipynb</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

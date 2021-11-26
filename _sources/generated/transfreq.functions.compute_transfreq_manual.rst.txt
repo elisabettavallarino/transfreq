@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.functions`.compute_transfreq_manual
+================================================================
+
+.. currentmodule:: transfreq.functions
+
+.. autofunction:: compute_transfreq_manual
+
+.. include:: transfreq.functions.compute_transfreq_manual.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>

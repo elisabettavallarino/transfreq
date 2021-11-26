@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.viz`.plot_clusters
+===============================================
+
+.. currentmodule:: transfreq.viz
+
+.. autofunction:: plot_clusters
+
+.. include:: transfreq.viz.plot_clusters.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>
