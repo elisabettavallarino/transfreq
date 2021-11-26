@@ -226,7 +226,7 @@ Plot results obtained with the second definition of the clusters (2D)
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** ( 0 minutes  13.106 seconds)
+   **Total running time of the script:** ( 0 minutes  12.730 seconds)
 
 
 .. _sphx_glr_download_auto_examples_plot_manual_analysis.py:
