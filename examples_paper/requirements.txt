@@ -5,6 +5,7 @@ mne-bids==0.7
 numpy==1.18.1
 openneuro-py==2021.10.1
 pandas==1.0.1
+python-picard==0.4
 sklearn==0.0
 scipy==1.4.1
 visbrain==0.4.5
