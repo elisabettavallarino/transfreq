@@ -30,4 +30,6 @@ setup(
     packages=find_packages(exclude=['docs', 'tests']),
     # setuptools > 38.6.0 needed for markdown README.md
     setup_requires=['setuptools>=38.6.0'],
+    include_package_data=True,
+    package_data={'': ['data/*.fif']}
 )

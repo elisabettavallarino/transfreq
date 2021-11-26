@@ -94,7 +94,7 @@ class TopoObj(VisbrainObject):
     ###########################################################################
     ###########################################################################
 
-    def __init__(self, name, data, xyz=None, channels=None, ch_idx = None, system='cartesian',
+    def __init__(self, name, data, xyz=None, channels=None, ch_idx = None, radius =None, system='cartesian',
                  levels=None, level_colors='white', unit='degree',
                  line_color='black', line_width=3., chan_size=12.,
                  chan_offset=(0., 0., 0.), chan_mark_color='white',
@@ -119,6 +119,7 @@ class TopoObj(VisbrainObject):
         csize = int(self._pix / self._interp) if self._interp else self._pix
         l = csize / 2  # noqa
         self.ch_idx = ch_idx
+        self.radius = radius
         # ======================== NODES ========================
         # Main topoplot node :
         self.node = scene.Node(name='Topoplot', parent=self._node)
@@ -188,7 +189,7 @@ class TopoObj(VisbrainObject):
         # Channel's text :
         self.chan_text = visuals.Text(pos=pos, name='ChanText',
                                       parent=self.node_chan, anchor_x='center',
-                                      color=chan_txt_color,
+                                      color=chan_txt_color,bold=True,
                                       font_size=chan_size)
 
         # ================== CAMERA ==================
@@ -298,7 +299,8 @@ class TopoObj(VisbrainObject):
         
         if self.ch_idx is None: ch_idx = np.arange(len(data), dtype=int)
         else: ch_idx = self.ch_idx
-        radius = normalize(data[ch_idx], 10., 30.)
+        if self.radius is None: radius = normalize(data[ch_idx], 10., 30.)
+        else: radius = normalize(self.radius, 10., 30.)
         self.chan_markers.set_data(pos=xyz[ch_idx,:], size=radius, edge_color='black',
                                    face_color=self._chan_mark_color,
                                    symbol=self._chan_mark_symbol)
