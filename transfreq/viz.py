@@ -484,8 +484,8 @@ def plot_transfreq_klimesch(psds_rest, psds_task, freqs, tf, showfig=True, ax=No
     else:
         fig = ax.get_figure()
 
-    ax.plot(freqs, psds_task.mean(axis=0), c=colors_orig[0], label=r'$S^{task}$')
-    ax.plot(freqs, psds_rest.mean(axis=0), c=colors_orig[1], label=r'$S^{rest}$')
+    ax.plot(freqs, psds_task.mean(axis=0), c=colors_orig[0], label=r'$S_{task}$')
+    ax.plot(freqs, psds_rest.mean(axis=0), c=colors_orig[1], label=r'$S_{rest}$')
     ax.axvline(tf, c='k', label='TF=' + str(np.round(tf, decimals=2)) + ' Hz')
     ax.grid()
     ax.set_title("Klimesch's method")
