@@ -20,26 +20,6 @@ The examples in this page make use of a sample data extracted from the open-sour
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Compute transition frequency from custom clusters">
-
-.. only:: html
-
- .. figure:: /auto_examples/images/thumb/sphx_glr_plot_manual_analysis_thumb.png
-
-     :ref:`sphx_glr_auto_examples_plot_manual_analysis.py`
-
-.. raw:: html
-
-    </div>
-
-
-.. toctree::
-   :hidden:
-
-   /auto_examples/plot_manual_analysis
-
-.. raw:: html
-
     <div class="sphx-glr-thumbcontainer" tooltip="Authomatic computation of the transition frequency">
 
 .. only:: html
@@ -57,6 +37,26 @@ The examples in this page make use of a sample data extracted from the open-sour
    :hidden:
 
    /auto_examples/plot_main_code
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Compute transition frequency from custom clusters">
+
+.. only:: html
+
+ .. figure:: /auto_examples/images/thumb/sphx_glr_plot_manual_analysis_thumb.png
+
+     :ref:`sphx_glr_auto_examples_plot_manual_analysis.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_manual_analysis
 .. raw:: html
 
     <div class="sphx-glr-clear"></div>
