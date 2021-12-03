@@ -30,7 +30,7 @@ To check if everything worked fine, you can run:
 
 .. code::
 
-    python -c 'import sesameeg'
+    python -c 'import transfreq'
 
 and it should not give any error messages.
 
