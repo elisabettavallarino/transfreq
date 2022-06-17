@@ -8,8 +8,8 @@ in our paper [1]_, and to reproduce the corresponding results.
 
 The data set is downloaded from the OpenNeuro repository, accession number: ds003490 [2]_.
 
-To run the analysis, download all codes in this page  in the same folder. Then add to the 
-folder  the requirements.txt file at this 
+To run the analysis, download all codes in this page  in the same folder. Then, please add to the
+folder the requirements.txt file at this
 `link <https://github.com/elisabettavallarino/transfreq/blob/master/examples_paper/requirements.txt>`_.
 
 The results of the paper can be obtained by running the following commands in a terminal.
