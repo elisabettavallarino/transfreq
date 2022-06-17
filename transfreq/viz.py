@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 from visbrain.objects import ColorbarObj, SceneObj
-from .TopoObj_mod import TopoObj
+from TopoObj_mod import TopoObj # !!! tolto il punto davanti a TopoObj_mod
 
 # Define colors for plots
 colors_orig = ['C0', 'C1', '#aef956', 'C3', 'C4', 'C5']
 # Extended names of the clustering methods
-meth_names = ['1D thresholding', '1D Mean-Shift', '2D k-means', '2D adjusted k-means']
+meth_names = ['1D thresholding', '1D mean-shift', '2D k-means', '2D adjusted k-means']
 
 
 def plot_clusters(tfbox, mode=None, order='standard', showfig=True, ax=None):
@@ -245,7 +245,7 @@ def plot_coefficients(psds, freqs, ch_names, theta_range=None, alpha_range=None,
     return fig
 
 
-def plot_channels(tfbox, ch_locs, mode=None, showfig=True, ax=None):
+def plot_channels_old(tfbox, ch_locs, mode=None, showfig=True, ax=None):
     """
     Plot clustered channels on head topomap
 
@@ -316,7 +316,7 @@ def plot_channels(tfbox, ch_locs, mode=None, showfig=True, ax=None):
         cb_obj_2 = ColorbarObj(t_obj_2, cblabel=r'alpha/theta coefficient', **kw_cbar)
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_2, row=0, col=2, title_color='black', width_max=600, height_max=800,
-                          title='\n \n                            G alpha',
+                          title='\n \n                            '+r'$G_{\alpha}$',
                           title_size=24.0)
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100, height_max=800)
 
@@ -345,7 +345,7 @@ def plot_channels(tfbox, ch_locs, mode=None, showfig=True, ax=None):
 
         # Add the topoplot and the colorbar to the scene :
         sc.add_to_subplot(t_obj_2, row=0, col=2, title_color='black', width_max=600, height_max=800,
-                          title='\n \n                            G alpha',
+                          title='\n \n                            '+r"$G_{\alpha}$",
                           title_size=24.0)
 
         sc.add_to_subplot(cb_obj_2, row=0, col=3, width_max=100, height_max=800)
@@ -385,6 +385,173 @@ def plot_channels(tfbox, ch_locs, mode=None, showfig=True, ax=None):
 
     return fig
 
+
+def plot_channels(tfbox, ch_locs, mode=None, showfig=True, subfig=None):
+    """
+    Plot clustered channels on head topomap
+
+    Parameters:
+        tfbox: dictionary
+            output of either create_cluster, compute_transfreq_manual or compute_transfreq
+        ch_locs: array, shape (N_channels, 3)
+            channels locations (unit of measure: mm),
+        mode: None, '1d', '2d' (default None)
+            mode to be used for plotting. If '1d' the ratio between alpha and
+            theta coefficients will be plotted. If '2d' alpha and theta coefficients
+            will be plotted on the plane. If None (default) and the method contained
+            in tfbox is 1, 2, 3 of 4 the mode will be set automatically.
+        showfig: bool (default True)
+            if True figure will be showed, if False figure will not be showed
+        ax: instance of Axes | None
+            Axes to plot into. If None, axes will be created.
+
+    Returns:
+        fig: instance of Figure
+            Figure representing the clustered channels on head topomap
+    """
+
+    if mode is None and tfbox['method'] not in [1, 2, 3, 4]:
+        raise ValueError(" provide a mode, either '1d' or '2d' ")
+    
+        
+    method = tfbox['method']
+
+    theta_coef = tfbox['cluster'].loc['theta_coef'].values
+    alpha_coef = tfbox['cluster'].loc['alpha_coef'].values
+    labels = tfbox['cluster'].loc['labels'].values
+    ch_names = tfbox['cluster'].columns.tolist()
+    theta_idx = np.where(labels == 0)[0]
+    alpha_idx = np.where(labels == 1)[0]
+
+    kw_top = dict(margin=0.2, chan_offset=(0., 0.1, 0.), chan_size=22, line_color='black', line_width=5)
+    
+    sc_alpha = SceneObj(bgcolor='white', size=(1000, 1000), verbose=False)
+    sc_theta = SceneObj(bgcolor='white', size=(1000, 1000), verbose=False)
+    
+    if (mode == '1d') or ((mode is None) and (method in [1, 2])):
+        # Theta coefficient
+
+        radius_1 = theta_coef[theta_idx]
+        # Create the topoplot and the object :
+        t_obj_1 = TopoObj('topo', alpha_coef / theta_coef, channels=ch_names, xyz=ch_locs * 1000, ch_idx=theta_idx,
+                          radius=radius_1,
+                          clim=(min(alpha_coef / theta_coef), max(alpha_coef / theta_coef)), chan_mark_color='red',
+                          **kw_top)
+        # Add the topoplot and the colorbar to the scene :
+        sc_theta.add_to_subplot(t_obj_1, row=0, col=0, title_color='black', width_max=600, height_max=800)
+        
+        # Alpha coefficient
+        radius_2 = alpha_coef[alpha_idx]
+        t_obj_2 = TopoObj('topo', alpha_coef / theta_coef, channels=ch_names, xyz=ch_locs * 1000, ch_idx=alpha_idx,
+                          radius=radius_2,
+                          clim=(min(alpha_coef / theta_coef), max(alpha_coef / theta_coef)), chan_mark_color='red',
+                          **kw_top)
+        # Add the topoplot and the colorbar to the scene :
+        sc_alpha.add_to_subplot(t_obj_2, row=0, col=0, title_color='black', width_max=600, height_max=800)
+    
+    elif (mode == '2d') or ((mode is None) and (method in [3, 4])):
+        # Theta coefficient
+
+        # Create the topoplot and the object :
+        t_obj_1 = TopoObj('topo', theta_coef, channels=ch_names, xyz=ch_locs * 1000, ch_idx=theta_idx,
+                          clim=(min(theta_coef), max(theta_coef)), chan_mark_color='red', **kw_top)
+
+        # Add the topoplot and the colorbar to the scene :
+        sc_theta.add_to_subplot(t_obj_1, row=0, col=0, title_color='black', width_max=600, height_max=800)
+
+        # Alpha coefficient
+
+        t_obj_2 = TopoObj('topo', alpha_coef, channels=ch_names, xyz=ch_locs * 1000, ch_idx=alpha_idx,
+                          clim=(min(alpha_coef), max(alpha_coef)), chan_mark_color='red', **kw_top)
+
+        
+        # Add the topoplot and the colorbar to the scene :
+        sc_alpha.add_to_subplot(t_obj_2, row=0, col=0, title_color='black', width_max=600, height_max=800)
+
+        
+
+    
+    # crop sc_theta image
+    image_theta = sc_theta.render()
+    i_left = 0
+    i_right = image_theta.shape[1] - 1
+    i_top = 0
+    i_bottom = image_theta.shape[0] - 1
+    while np.array_equal(image_theta[:, i_left, :], image_theta[:, 0, :]):
+        i_left += 1
+    while np.array_equal(image_theta[:, i_right, :], image_theta[:, -1, :]):
+        i_right -= 1
+    while np.array_equal(image_theta[i_top, :, :], image_theta[0, :, :]):
+        i_top += 1
+    while np.array_equal(image_theta[i_bottom, :, :], image_theta[-1, :, :]):
+        i_bottom -= 1
+    crop_sc_theta = sc_theta.render()[i_top - 10:i_bottom + 10, i_left - 10:i_right + 10]
+
+    # crop sc_alpha image
+    image_alpha = sc_alpha.render()
+    i_left = 0
+    i_right = image_alpha.shape[1] - 1
+    i_top = 0
+    i_bottom = image_alpha.shape[0] - 1
+    while np.array_equal(image_alpha[:, i_left, :], image_alpha[:, 0, :]):
+        i_left += 1
+    while np.array_equal(image_alpha[:, i_right, :], image_alpha[:, -1, :]):
+        i_right -= 1
+    while np.array_equal(image_alpha[i_top, :, :], image_alpha[0, :, :]):
+        i_top += 1
+    while np.array_equal(image_alpha[i_bottom, :, :], image_alpha[-1, :, :]):
+        i_bottom -= 1
+    crop_sc_alpha = sc_alpha.render()[i_top - 10:i_bottom + 10, i_left - 10:i_right + 10]
+
+    if method in [1, 2, 3, 4]:
+        title = 'Method ' + str(method) + ': ' + meth_names[method - 1]
+    else:
+        title = 'Method ' + str(method)
+
+    if (mode == '1d') or ((mode is None) and (method in [1, 2])):
+        cb_label_theta = r'$\alpha/\theta$ coefficient'
+        cb_label_alpha = r'$\alpha/\theta$ coefficient'
+        vmin_theta = min(alpha_coef / theta_coef)
+        vmax_theta = max(alpha_coef / theta_coef)
+        vmin_alpha = min(alpha_coef / theta_coef)
+        vmax_alpha = max(alpha_coef / theta_coef)
+    elif (mode == '2d') or ((mode is None) and (method in [3, 4])):
+        cb_label_theta = r'$\theta$ coefficient'
+        cb_label_alpha = r'$\alpha$ coefficient'
+        vmin_theta = min(theta_coef)
+        vmax_theta = max(theta_coef)
+        vmin_alpha = min(alpha_coef)
+        vmax_alpha = max(alpha_coef)
+        
+    titlesize = 18
+    suptitlesize = 18
+    labelsize = 12
+    if subfig is None:
+        subfig, ax = plt.subplots(1, 2, figsize=(8, 4),constrained_layout=True)
+    else:
+        ax = subfig.subplots(1, 2)
+        
+        
+        
+    
+    theta_plot = ax[0].imshow(crop_sc_theta,vmin=vmin_theta, vmax=vmax_theta, interpolation='none')
+    cb_theta = subfig.colorbar(theta_plot, ax=ax[0],shrink=0.7)
+    cb_theta.set_ticks([vmin_theta,vmax_theta])
+    cb_theta.set_label(cb_label_theta,fontsize=labelsize)
+    ax[0].set_title(r'$G_{\theta}$',fontsize=titlesize)
+    alpha_plot = ax[1].imshow(crop_sc_alpha,vmin=vmin_alpha, vmax=vmax_alpha, interpolation='none')
+    cb_alpha = subfig.colorbar(alpha_plot, ax=ax[1],shrink=0.7)
+    cb_alpha.set_ticks([vmin_alpha,vmax_alpha])
+    cb_alpha.set_label(cb_label_alpha,fontsize=labelsize)
+    ax[1].set_title(r'$G_{\alpha}$',fontsize=titlesize)
+    # ax.set_visible(False)
+    ax[0].axis('off')
+    ax[1].axis('off')
+    subfig.suptitle(title,fontsize=suptitlesize)
+    if showfig is False:
+        plt.close(subfig)
+
+    return subfig
 
 def plot_transfreq(psds, freqs, tfbox, showfig=True, ax=None):
     """
@@ -452,8 +619,8 @@ def plot_transfreq(psds, freqs, tfbox, showfig=True, ax=None):
 
 def plot_transfreq_klimesch(psds_rest, psds_task, freqs, tf, showfig=True, ax=None):
     """
-    Plot rest and task power spectra profiles and the transition frequencycomputed with
-    Klimesch's method
+    Plot rest and task power spectra profiles and the transition frequency computed
+    with Klimesch's method
 
     Parameters:
         psds_rest: array, shape (N_sensors, N_freqs)
@@ -489,6 +656,56 @@ def plot_transfreq_klimesch(psds_rest, psds_task, freqs, tf, showfig=True, ax=No
     ax.axvline(tf, c='k', label='TF=' + str(np.round(tf, decimals=2)) + ' Hz')
     ax.grid()
     ax.set_title("Klimesch's method")
+    ax.legend()
+    ax.set_xlim(min(freqs), 20)
+    ax.set_xlabel('frequency [Hz]')
+    ax.set_ylabel('power spectrum (normalised)')
+    if ax is None:
+        fig.tight_layout()
+
+    if showfig is False:
+        plt.close(fig)
+
+    return fig
+
+
+def plot_transfreq_minimum(psds_rest, freqs, tf, showfig=True, ax=None):
+    """
+    Plot rest power spectrum profile and the transition frequency computed with
+    minimum method
+
+    Parameters:
+        psds_rest: array, shape (N_sensors, N_freqs)
+            power spectral matrix of the resting state data
+        psds_task: array, shape (N_sensors, N_freqs)
+            power spectral matrix of the data recorded dunring a task execution
+        freqs: array, shape (N_freqs,)
+            frequncies at which the psds is computed
+        tf: scalar
+            the tf computed with Klimesch's method (output of compute_transfreq_klimesch)
+        showfig: bool (default True)
+            if True figure will be showed, if False figure will not be showed
+        ax: instance of Axes | None
+            Axes to plot into. If None, axes will be created.
+
+    Returns:
+        fig: instance of Figure
+            Figure representing rest and task power spectra profiles and the
+            transition frequencycomputed with Klimesch's method
+    """
+
+    # Normalize power spectrum
+    psds_rest = psds_rest / psds_rest.sum(axis=1).reshape((psds_rest.shape[0], 1))
+    
+    if ax is None:
+        fig, ax = plt.subplots(1, 1)
+    else:
+        fig = ax.get_figure()
+
+    ax.plot(freqs, psds_rest.mean(axis=0), c=colors_orig[1], label=r'$S_{rest}$')
+    ax.axvline(tf, c='k', label='TF=' + str(np.round(tf, decimals=2)) + ' Hz')
+    ax.grid()
+    ax.set_title("Minimum method")
     ax.legend()
     ax.set_xlim(min(freqs), 20)
     ax.set_xlabel('frequency [Hz]')
