@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 from visbrain.objects import ColorbarObj, SceneObj
-from TopoObj_mod import TopoObj # !!! tolto il punto davanti a TopoObj_mod
+from .TopoObj_mod import TopoObj
 
 # Define colors for plots
 colors_orig = ['C0', 'C1', '#aef956', 'C3', 'C4', 'C5']
