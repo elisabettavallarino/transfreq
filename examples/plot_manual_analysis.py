@@ -92,43 +92,24 @@ tfbox_2d = compute_transfreq_manual(psds, freqs, theta_chs_2d, alpha_chs_2d,
 
 ###########################################################################
 # Plot results obtained with the first definition of the clusters (1D)
-#fig = plt.figure()
-#gs = fig.add_gridspec(2, 2)
-#ax1 = fig.add_subplot(gs[0, :])
-#plot_channels(tfbox_1d, ch_locs, mode='1d', ax=ax1)
-#ax2 = fig.add_subplot(gs[1, 0])
-#plot_clusters(tfbox_1d, mode='1d', order='sorted', ax=ax2)
-#ax3 = fig.add_subplot(gs[1, 1])
-#plot_transfreq(psds, freqs, tfbox_1d, ax=ax3)
-fig.tight_layout()
 
 fig = plt.figure(constrained_layout=True, figsize=(15, 10))
-subfigs = fig.subfigures(2, 2, wspace=0.07)
-plot_channels(tfbox_1d, ch_locs, mode='1d', subfig=subfigs[0])
+subfigs = fig.subfigures(2, 2, wspace=0.1)
+plot_channels(tfbox_1d, ch_locs, mode='1d', subfig=subfigs[0,0])
 ax1 = subfigs[0,1].subplots(1, 1)
 plot_clusters(tfbox_1d, mode='1d', order='sorted', ax=ax1)
 ax2 = subfigs[1,0].subplots(1, 1)
 plot_transfreq(psds, freqs, tfbox_1d, ax=ax2)
-fig.tight_layout()
+
 ###########################################################################
 # Plot results obtained with the second definition of the clusters (2D)
-#fig = plt.figure()
-#gs = fig.add_gridspec(2, 2)
-#ax1 = fig.add_subplot(gs[0, :])
-#plot_channels(tfbox_2d, ch_locs, mode='2d', ax=ax1)
-#ax2 = fig.add_subplot(gs[1, 0])
-#plot_clusters(tfbox_2d, mode='2d', ax=ax2)
-#ax3 = fig.add_subplot(gs[1, 1])
-#plot_transfreq(psds, freqs, tfbox_2d, ax=ax3)
-#fig.tight_layout()
-
 
 fig = plt.figure(constrained_layout=True, figsize=(15, 10))
 subfigs = fig.subfigures(2, 2, wspace=0.07)
-plot_channels(tfbox_2d, ch_locs, mode='2d', subfig=subfigs[0])
+plot_channels(tfbox_2d, ch_locs, mode='2d', subfig=subfigs[0,0])
 ax1 = subfigs[0,1].subplots(1, 1)
-plot_clusters(tfbox_2d, mode='1d', order='sorted', ax=ax1)
+plot_clusters(tfbox_2d, mode='2d', order='sorted', ax=ax1)
 ax2 = subfigs[1,0].subplots(1, 1)
 plot_transfreq(psds, freqs, tfbox_2d, ax=ax2)
-fig.tight_layout()
+
 

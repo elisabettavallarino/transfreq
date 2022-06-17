@@ -78,20 +78,18 @@ tfbox = compute_transfreq(psds_rest, freqs, ch_names=ch_names_rest)
 ###########################################################################
 # Plot results
 
+fig = plt.figure(constrained_layout=True, figsize=(15, 10))
+subfigs = fig.subfigures(2, 1, wspace=0.1)
+
+ax1 = subfigs[0].subplots(1, 2)
 # Plot estimated transition frequency
-fig = plt.figure()
-gs = fig.add_gridspec(2, 2)
-ax1 = fig.add_subplot(gs[0, 0])
-plot_transfreq(psds_rest, freqs, tfbox, ax=ax1)
-
+plot_transfreq(psds_rest, freqs, tfbox, ax=ax1[0])
 # Plot results of the clustering approach
-ax2 = fig.add_subplot(gs[0, 1])
-plot_clusters(tfbox, ax=ax2)
-
+plot_clusters(tfbox, ax=ax1[1])
 # Plot locations of the two channels groups
-ax3 = fig.add_subplot(gs[1, :])
-plot_channels(tfbox, ch_locs_rest, ax=ax3)
-fig.tight_layout()
+plot_channels(tfbox, ch_locs_rest, subfig=subfigs[1])
+
+
 
 ###########################################################################
 # Compute results with Klimesch's method
