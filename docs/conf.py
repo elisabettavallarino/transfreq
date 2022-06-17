@@ -14,6 +14,7 @@ import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 from visbrain.config import CONFIG
+from sphinx_gallery.sorting import FileNameSortKey
 
 # -- Project information -----------------------------------------------------
 
@@ -78,6 +79,7 @@ sphinx_gallery_conf = {
      'gallery_dirs': gallery_dirs,  # path to where to save gallery generated output
      'image_scrapers': ('matplotlib'), # figures extension to be embedded
      'default_thumb_file': os.path.join('_static', 'ex_tf.png'),
+     'within_subsection_order': FileNameSortKey
 }
 
 CONFIG['MPL_RENDER'] = True # Embed visbrain figures in the documentation
