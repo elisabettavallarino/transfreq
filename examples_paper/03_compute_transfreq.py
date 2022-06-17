@@ -6,7 +6,8 @@ Compute the theta-to-alpha transition frequency with transfreq and with the
 classical Klimesch's method.
 """
 
-from transfreq import compute_transfreq, compute_transfreq_klimesch
+from transfreq import (compute_transfreq, compute_transfreq_klimesch,
+                       compute_transfreq_minimum)
 import os.path as op
 import os
 import pickle
@@ -54,6 +55,15 @@ for subj in data_rest.keys():
         freqs = data_rest[subj][ses]['freqs']
         data_task[subj][ses]['tf_klimesch'] = \
             compute_transfreq_klimesch(psds_rest, psds_task, freqs)
+
+###############################################################################
+# Transition frequency with minimum method
+for subj in data_rest.keys():
+    for ses in data_rest[subj].keys():
+        psds_rest = data_rest[subj][ses]['psds']
+        freqs = data_rest[subj][ses]['freqs']
+        data_rest[subj][ses]['tf_minimum'] = \
+            compute_transfreq_minimum(psds_rest, freqs)
 
 ###############################################################################
 # Save data (overwrite existing files)

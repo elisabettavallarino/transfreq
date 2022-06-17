@@ -9,7 +9,7 @@ import pandas as pd
 from sklearn.cluster import KMeans, MeanShift
 
 # extended names of the clustering methods 
-meth_names = ['1D thresholding', '1D Mean-Shift', '2D k-means', '2D adjusted k-means']
+meth_names = ['1D thresholding', '1D mean-shift', '2D k-means', '2D adjusted k-means']
 
 
 def _compute_cluster(psds, freqs, ch_names= None, alpha_range=None, theta_range=None, method=4):
@@ -259,7 +259,9 @@ def compute_transfreq(psds, freqs, ch_names=None, theta_range=None, alpha_range=
             err = 0
 
         tfbox['tf'] = tf_new
-        tfbox['cluster'] = cluster   
+        tfbox['cluster'] = cluster
+        tfbox['n_iter'] = n_iter
+        
      
         if ap-1 > tf_new:
             alpha_range = [ap-1, ap+1]
@@ -430,3 +432,33 @@ def compute_transfreq_klimesch(psds_rest, psds_task, freqs):
                 tf = freqs[f-1]
             break
     return tf
+
+
+def compute_transfreq_minimum(psds_rest, freqs):
+    
+    """
+    Compute transition frequency with minimum method
+    
+    Parameters:
+        psds_rest: array, shape (N_sensors, N_freqs)
+            power spectral matrix of the resting state data
+        freqs: array, shape (N_freqs,)
+            frequencies at which the psds_rest and psds_task are computed
+        
+    Returns:
+        tf: scalar
+    """
+    
+    # normalise power spectra
+    psds_rest = psds_rest/psds_rest.sum(axis=1).reshape((psds_rest.shape[0], 1))
+       
+    f_in_idx = np.where((freqs >= 7) & (freqs <= 13))[0]
+    ap_idx = f_in_idx[0] + np.argmax(psds_rest.mean(axis=0)[f_in_idx])
+    ap_f = freqs[ap_idx]
+    
+    # tf freqs range
+    idx_freqs = np.where((freqs >= 2) & (freqs <= ap_f))[0]
+    tf_minimum_idx = idx_freqs[0] + np.argmin(psds_rest.mean(axis=0)[idx_freqs])
+    tf_minimum = freqs[tf_minimum_idx]
+    
+    return tf_minimum
