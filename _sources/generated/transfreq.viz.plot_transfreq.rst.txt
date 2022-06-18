@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.viz`.plot_transfreq
+================================================
+
+.. currentmodule:: transfreq.viz
+
+.. autofunction:: plot_transfreq
+
+.. include:: transfreq.viz.plot_transfreq.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>

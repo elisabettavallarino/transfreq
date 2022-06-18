@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.functions`.compute_transfreq_klimesch
+==================================================================
+
+.. currentmodule:: transfreq.functions
+
+.. autofunction:: compute_transfreq_klimesch
+
+.. include:: transfreq.functions.compute_transfreq_klimesch.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>

@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.viz`.plot_coefficients
+===================================================
+
+.. currentmodule:: transfreq.viz
+
+.. autofunction:: plot_coefficients
+
+.. include:: transfreq.viz.plot_coefficients.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>

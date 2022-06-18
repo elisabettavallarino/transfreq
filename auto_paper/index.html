@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reproducing paper results &#8212; transfreq 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Part 1: Fetch data" href="00_fetch_data.html" />
+    <link rel="prev" title="Compute transition frequency from custom clusters" href="../auto_examples/plot_manual_analysis.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+
+  </head><body>
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          transfreq</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../api.html">API</a></li>
+                <li><a href="../auto_examples/index.html">Examples</a></li>
+                <li><a href="#">Reproducing paper results</a></li>
+                <li><a href="https://github.com/elisabettavallarino/transfreq">GitHub</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html">Site <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+              <li class="hidden-sm">
+<div id="sourcelink">
+  <a href="../_sources/auto_paper/index.rst.txt"
+     rel="nofollow">Source</a>
+</div></li>
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="body col-md-12 content" role="main">
+      
+  <div class="section" id="reproducing-paper-results">
+<span id="paper"></span><span id="sphx-glr-auto-paper"></span><h1>Reproducing paper results<a class="headerlink" href="#reproducing-paper-results" title="Permalink to this headline">¶</a></h1>
+<p>The following scripts allow to preprocess the open-source data set used
+in our paper <a class="footnote-reference brackets" href="#id3" id="id1">1</a>, and to reproduce the corresponding results.</p>
+<p>The data set is downloaded from the OpenNeuro repository, accession number: ds003490 <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
+<p>To run the analysis, download all codes in this page  in the same folder. Then add to the
+folder  the requirements.txt file at this
+<a class="reference external" href="https://github.com/elisabettavallarino/transfreq/blob/master/examples_paper/requirements.txt">link</a>.</p>
+<p>The results of the paper can be obtained by running the following commands in a terminal.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="n">transfreq_env</span>
+<span class="n">source</span> <span class="n">transfreq_env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<span class="c1"># In Windows replace the previous command with</span>
+<span class="c1"># transfreq_env\Scripts\activate</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+<span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">transfreq</span>
+<span class="n">python3</span> <span class="mi">00</span><span class="n">_fetch_data</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python3</span> <span class="mi">01</span><span class="n">_preprocessing</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python3</span> <span class="mi">02</span><span class="n">_psd</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python3</span> <span class="mi">03</span><span class="n">_compute_transfreq</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python3</span> <span class="mi">04</span><span class="n">_plots</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><ol class="upperalpha simple" start="5">
+<li><p>Vallarino, S. Sommariva, D. Arnaldi, F. Famà, M. Piana, F. Nobili. Transfreq: a Python package for computing the theta-to-alpha transition frequency from resting state EEG data. Submitted.</p></li>
+</ol>
+</dd>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><p>J.F. Cavanagh, P. Kumar, A.A. Mueller, S.P. Richardson, A. Mueen. Diminished  EEG habituation  to novel  events  effectively  classifies  Parkinson’s patients. Clinical Neurophysiology 129, 409–418 (2018).</p>
+</dd>
+</dl>
+<div class="sphx-glr-thumbcontainer" tooltip="Part 1: Fetch data"><div class="figure align-default" id="id5">
+<img alt="../_images/sphx_glr_00_fetch_data_thumb.png" src="../_images/sphx_glr_00_fetch_data_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="00_fetch_data.html#sphx-glr-auto-paper-00-fetch-data-py"><span class="std std-ref">Part 1: Fetch data</span></a></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="Part 2: Preprocessing"><div class="figure align-default" id="id6">
+<img alt="../_images/sphx_glr_01_preprocessing_thumb.png" src="../_images/sphx_glr_01_preprocessing_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="01_preprocessing.html#sphx-glr-auto-paper-01-preprocessing-py"><span class="std std-ref">Part 2: Preprocessing</span></a></span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="Part 3: Compute power spectra"><div class="figure align-default" id="id7">
+<img alt="../_images/sphx_glr_02_psd_thumb.png" src="../_images/sphx_glr_02_psd_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="02_psd.html#sphx-glr-auto-paper-02-psd-py"><span class="std std-ref">Part 3: Compute power spectra</span></a></span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="Part 4: Compute transition frequency"><div class="figure align-default" id="id8">
+<img alt="../_images/sphx_glr_03_compute_transfreq_thumb.png" src="../_images/sphx_glr_03_compute_transfreq_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="03_compute_transfreq.html#sphx-glr-auto-paper-03-compute-transfreq-py"><span class="std std-ref">Part 4: Compute transition frequency</span></a></span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="Part 5: Plot results"><div class="figure align-default" id="id9">
+<img alt="../_images/sphx_glr_04_plots_thumb.png" src="../_images/sphx_glr_04_plots_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="04_plots.html#sphx-glr-auto-paper-04-plots-py"><span class="std std-ref">Part 5: Plot results</span></a></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer" tooltip="  * Selection of proper time-interval   * Band pass filtering in [2, 50]Hz   * Mark bad segment..."><div class="figure align-default" id="id10">
+<img alt="../_images/sphx_glr_preprocessing_info_thumb.png" src="../_images/sphx_glr_preprocessing_info_thumb.png" />
+<p class="caption"><span class="caption-text"><a class="reference internal" href="preprocessing_info.html#sphx-glr-auto-paper-preprocessing-info-py"><span class="std std-ref">Preprocessing routine</span></a></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-clear"></div><div class="sphx-glr-footer class sphx-glr-footer-gallery docutils container">
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/54c5ae4fb598f256229c0ad66332c2f0/auto_paper_python.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">auto_paper_python.zip</span></code></a></p>
+</div>
+<div class="sphx-glr-download docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/f0dec5de156fc8d076298ff85026b6fb/auto_paper_jupyter.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Jupyter</span> <span class="pre">notebooks:</span> <span class="pre">auto_paper_jupyter.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

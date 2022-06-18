@@ -1,9 +1,0 @@
-matplotlib
-mne
-numpy
-pandas
-python-picard
-sklearn
-scipy
-visbrain
-vispy
