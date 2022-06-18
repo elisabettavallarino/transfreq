@@ -11,11 +11,11 @@ docs/generated/
 
 # Pycharm
 .idea
-venv
+transfreq_venv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-transfreq/__pycache__
+transfreq/__pycache__/
 
 # Downloaded data
 transfreq_data/
