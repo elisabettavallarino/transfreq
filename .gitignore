@@ -16,6 +16,8 @@ transfreq_env/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 transfreq/__pycache__/
+transfreq/__pycache__/TopoObj_mod.cpython-37.pyc
+transfreq/__pycache__/functions.cpython-37.pyc
 
 # Downloaded data
 transfreq_data/
