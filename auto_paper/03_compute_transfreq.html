@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>Part 4: Compute transition frequency &#8212; transfreq 1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css" />
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -20,10 +25,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="../_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="../_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="../_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
 
   </head><body>
 
@@ -94,13 +99,15 @@
       
   <div class="sphx-glr-download-link-note admonition note">
 <p class="admonition-title">Note</p>
-<p>Click <a class="reference internal" href="#sphx-glr-download-auto-paper-03-compute-transfreq-py"><span class="std std-ref">here</span></a> to download the full example code</p>
+<p>Click <a class="reference internal" href="#sphx-glr-download-auto-paper-03-compute-transfreq-py"><span class="std std-ref">here</span></a>
+to download the full example code</p>
 </div>
-<div class="sphx-glr-example-title section" id="part-4-compute-transition-frequency">
-<span id="sphx-glr-auto-paper-03-compute-transfreq-py"></span><h1>Part 4: Compute transition frequency<a class="headerlink" href="#part-4-compute-transition-frequency" title="Permalink to this headline">¶</a></h1>
+<section class="sphx-glr-example-title" id="part-4-compute-transition-frequency">
+<span id="sphx-glr-auto-paper-03-compute-transfreq-py"></span><h1>Part 4: Compute transition frequency<a class="headerlink" href="#part-4-compute-transition-frequency" title="Permalink to this heading">¶</a></h1>
 <p>Compute the theta-to-alpha transition frequency with transfreq and with the
 classical Klimesch’s method.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transfreq</span> <span class="kn">import</span> <span class="n">compute_transfreq</span><span class="p">,</span> <span class="n">compute_transfreq_klimesch</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transfreq</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compute_transfreq</span><span class="p">,</span> <span class="n">compute_transfreq_klimesch</span><span class="p">,</span>
+                       <span class="n">compute_transfreq_minimum</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">op</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -148,6 +155,15 @@ classical Klimesch’s method.</p>
             <span class="n">compute_transfreq_klimesch</span><span class="p">(</span><span class="n">psds_rest</span><span class="p">,</span> <span class="n">psds_task</span><span class="p">,</span> <span class="n">freqs</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Transition frequency with minimum method</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">subj</span> <span class="ow">in</span> <span class="n">data_rest</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">ses</span> <span class="ow">in</span> <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">psds_rest</span> <span class="o">=</span> <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;psds&#39;</span><span class="p">]</span>
+        <span class="n">freqs</span> <span class="o">=</span> <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;freqs&#39;</span><span class="p">]</span>
+        <span class="n">data_rest</span><span class="p">[</span><span class="n">subj</span><span class="p">][</span><span class="n">ses</span><span class="p">][</span><span class="s1">&#39;tf_minimum&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">compute_transfreq_minimum</span><span class="p">(</span><span class="n">psds_rest</span><span class="p">,</span> <span class="n">freqs</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>Save data (overwrite existing files)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data_rest_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">,</span> <span class="s1">&#39;data_rest.pkl&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
 <span class="n">data_task_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;psds&#39;</span><span class="p">,</span> <span class="s1">&#39;data_task.pkl&#39;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
@@ -159,15 +175,15 @@ classical Klimesch’s method.</p>
 </div>
 <p class="sphx-glr-timing"><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
 <div class="sphx-glr-footer class sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-paper-03-compute-transfreq-py">
-<div class="sphx-glr-download docutils container">
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/2ed9ed1c8a8674b611584df366e373da/03_compute_transfreq.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">03_compute_transfreq.py</span></code></a></p>
 </div>
-<div class="sphx-glr-download docutils container">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
 <p><a class="reference download internal" download="" href="../_downloads/b044588c79cf7cdb85dee91e3a143b81/03_compute_transfreq.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">03_compute_transfreq.ipynb</span></code></a></p>
 </div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
-</div>
+</section>
 
 
     </div>
@@ -182,7 +198,7 @@ classical Klimesch’s method.</p>
     </p>
     <p>
         &copy; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>

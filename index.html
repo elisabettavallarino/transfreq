@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>transfreq &#8212; transfreq 1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bootstrap-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="_static/gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -19,10 +24,10 @@
 <meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<script type="text/javascript" src="_static/js/jquery-1.11.0.min.js "></script>
-<script type="text/javascript" src="_static/js/jquery-fix.js "></script>
-<script type="text/javascript" src="_static/bootstrap-3.3.7/js/bootstrap.min.js "></script>
-<script type="text/javascript" src="_static/bootstrap-sphinx.js "></script>
+<script type="text/javascript" src="_static/js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+<script type="text/javascript" src="_static/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
 
   </head><body>
 
@@ -91,17 +96,17 @@
   <div class="row">
     <div class="body col-md-12 content" role="main">
       
-  <div class="section" id="transfreq">
-<h1>transfreq<a class="headerlink" href="#transfreq" title="Permalink to this headline">¶</a></h1>
+  <section id="transfreq">
+<h1>transfreq<a class="headerlink" href="#transfreq" title="Permalink to this heading">¶</a></h1>
 <p>Welcome to the documentation of transfreq, a Python3 library for automatically
 computing the individual transition frequency from theta to alpha band.
 transreq only requires in input the power density of EEG data recorded during a
 resting state.</p>
 <p>A detailed description of the algorithm implemented in transfreq can be found
-in the origial paper <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p>
-</div>
-<div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+in the origial paper <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.</p>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>To install the latest stable version of this package use <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">transfreq</span>
 </pre></div>
@@ -113,31 +118,30 @@ with <code class="docutils literal notranslate"><span class="pre">pip</span></co
 </pre></div>
 </div>
 <p>and it should not give any error messages.</p>
-</div>
-<div class="section" id="bug-reports">
-<h1>Bug reports<a class="headerlink" href="#bug-reports" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="bug-reports">
+<h1>Bug reports<a class="headerlink" href="#bug-reports" title="Permalink to this heading">¶</a></h1>
 <p>To report bugs, please use the <a class="reference external" href="https://github.com/elisabettavallarino/transfreq/issues">github issue tracker</a> .</p>
-</div>
-<div class="section" id="authors-of-the-code">
-<h1>Authors of the code<a class="headerlink" href="#authors-of-the-code" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="authors-of-the-code">
+<h1>Authors of the code<a class="headerlink" href="#authors-of-the-code" title="Permalink to this heading">¶</a></h1>
 <div class="line-block">
 <div class="line">Sara Sommariva &lt;<a class="reference external" href="mailto:sommariva&#37;&#52;&#48;dima&#46;unige&#46;it">sommariva<span>&#64;</span>dima<span>&#46;</span>unige<span>&#46;</span>it</a>&gt;,</div>
 <div class="line">Elisabetta Vallarino &lt;<a class="reference external" href="mailto:vallarino&#37;&#52;&#48;dima&#46;unige&#46;it">vallarino<span>&#64;</span>dima<span>&#46;</span>unige<span>&#46;</span>it</a>&gt;.</div>
 </div>
-</div>
-<div class="section" id="cite-our-work">
-<h1>Cite our work<a class="headerlink" href="#cite-our-work" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="cite-our-work">
+<h1>Cite our work<a class="headerlink" href="#cite-our-work" title="Permalink to this heading">¶</a></h1>
 <p>If you use this code in your project, please consider citing our work:</p>
-<dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><ol class="upperalpha simple" start="5">
+<aside class="footnote brackets" id="id2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<ol class="upperalpha simple" start="5">
 <li><p>Vallarino, S. Sommariva, D. Arnaldi, F. Famà, M. Piana, F. Nobili. Transfreq: a Python package for computing the theta-to-alpha transition frequency from resting state EEG data. Submitted</p></li>
 </ol>
-</dd>
-</dl>
+</aside>
 <div class="toctree-wrapper compound">
 </div>
-</div>
+</section>
 
 
     </div>
@@ -152,7 +156,7 @@ with <code class="docutils literal notranslate"><span class="pre">pip</span></co
     </p>
     <p>
         &copy; Copyright 2021, Elisabetta Vallarino, Sara Sommariva.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.1.2.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.0.2.<br/>
     </p>
   </div>
 </footer>
