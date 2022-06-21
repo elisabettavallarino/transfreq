@@ -1,0 +1,12 @@
+﻿:mod:`transfreq.viz`.plot_transfreq_minimum
+========================================================
+
+.. currentmodule:: transfreq.viz
+
+.. autofunction:: plot_transfreq_minimum
+
+.. include:: transfreq.viz.plot_transfreq_minimum.examples
+
+.. raw:: html
+
+    <div style='clear:both'></div>
