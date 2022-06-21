@@ -14,6 +14,7 @@ Operative functions
 	compute_transfreq
 	compute_transfreq_manual
 	compute_transfreq_klimesch 
+        compute_transfreq_minimum
 
 
 Visualisation functions
@@ -30,4 +31,5 @@ Visualisation functions
 	plot_channels
 	plot_transfreq
 	plot_transfreq_klimesch
+        plot_transfreq_minimum
 	
