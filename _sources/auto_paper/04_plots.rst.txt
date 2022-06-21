@@ -124,7 +124,7 @@ Results for an illustrative case (subject 001, session 01)
 
 Boxplots
 
-.. GENERATED FROM PYTHON SOURCE LINES 81-138
+.. GENERATED FROM PYTHON SOURCE LINES 81-140
 
 .. code-block:: default
 
@@ -168,7 +168,8 @@ Boxplots
     ax1.boxplot(err_tf[:,:4], meanline=True, widths = width, boxprops=boxprops, flierprops=flierprops, medianprops=medianprops,
                 meanprops=meanpointprops, whiskerprops=whiskerprops, capprops=capprops)
     ax1.set_ylabel(r'$\Delta_{\rm{TF}} \coloneq {\rm{TF_{Klimesch}}}-{\rm{TF}}_{transfreq}$ [Hz]', fontsize=lab_fs)
-    ax1.set_xticks(list(np.arange(1, len(meths)+1)), labels=meths_label[:4], rotation=45, fontsize=ticks_fs)
+    ax1.set_xticks(list(np.arange(1, len(meths)+1)))
+    ax1.set_xticklabels(meths_label[:4], rotation=45, fontsize=ticks_fs)
     ax1.tick_params(axis='both', which='minor', labelsize=ticks_fs)
     ax1.grid()
     ax1.set_ylim(ylim)
@@ -177,7 +178,8 @@ Boxplots
     ax2.boxplot(err_tf[:,-1], meanline=True, widths = width, boxprops=boxprops, flierprops=flierprops, medianprops=medianprops,
                 meanprops=meanpointprops, whiskerprops=whiskerprops, capprops=capprops)
     ax2.set_ylabel(r'$\Delta_{\rm{TF}} \coloneq {\rm{TF_{Klimesch}}}-{\rm{TF}}_{\rm{minimum}}$ [Hz]', fontsize=lab_fs)
-    ax2.set_xticks([1], labels=[meths_label[-1]], rotation=45, fontsize=ticks_fs)
+    ax2.set_xticks([1])
+    ax2.set_xticklabels([meths_label[-1]], rotation=45, fontsize=ticks_fs)
     ax2.tick_params(axis='both', which='minor', labelsize=ticks_fs)
     ax2.grid()
     ax2.set_ylim(ylim)
@@ -186,11 +188,11 @@ Boxplots
     plt.tight_layout()
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-140
+.. GENERATED FROM PYTHON SOURCE LINES 141-142
 
 Improvements of transfeq over Klimesch's method
 
-.. GENERATED FROM PYTHON SOURCE LINES 140-173
+.. GENERATED FROM PYTHON SOURCE LINES 142-175
 
 .. code-block:: default
 
